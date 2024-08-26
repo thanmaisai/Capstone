@@ -5,7 +5,7 @@
 */
 export const users = [
     {
-        id: "23131",
+        _id: "23131",
         firstName: "mukesh",
         lastName: "kumar",
         email: "mukesh@mukeshkumar.com",
@@ -13,7 +13,7 @@ export const users = [
         role: "admin"
     },
     {
-        id: "4232",
+        _id: "4232",
         firstName: "suresh",
         lastName: "sharma",
         email: "suresh@sureshsharma.com",
