@@ -40,8 +40,8 @@ const resolvers = {
             if (!doMatch) {
                 throw new Error("Email or password is invalid");
             }
-            const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-            return { token };
+            const token = jwt.sign({ userId: user._id ,role:user.role }, process.env.JWT_SECRET);
+            return { token , role:user.role};
         },
     }
 };

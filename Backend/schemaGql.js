@@ -8,15 +8,16 @@ const typeDefs = gql`
 
  type User {
      _id: ID!
-     firstName: String
-     lastName: String
-     email: String
-     password: String
-     role: String
+     firstName: String!
+     lastName: String!
+     email: String!
+     password: String!
+     role: String!
  }
 
  type Token{
     token:String
+    role:String
  }
 
  type Mutation {
@@ -35,7 +36,7 @@ const typeDefs = gql`
  input UserSigninInput {
     email: String!
     password: String!
-    role: String
  }
 `
+//  role: String ->add to check for userSignInput
 export default typeDefs
