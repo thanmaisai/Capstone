@@ -1,11 +1,15 @@
+import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
+import { LOGIN_USER } from '../gqloperations/mutations';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        role: ''
     });
+    const [signinUser, { data, loading, error }] = useMutation(LOGIN_USER);
 
     const handleChange = (e) => {
         setFormData({
@@ -14,57 +18,75 @@ export default function Login() {
         });
     };
 
-    const handleRoleSelect = (role) => {
-        setFormData({
-            ...formData,
-            role
-        });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const result = await signinUser({
+                variables: {
+                    userSignin: formData
+                }
+            });
+
+            if (result.data) {
+                const { token, role } = result.data.signinUser;
+                localStorage.setItem("token", token);
+
+                console.log("User role" + role);
+
+                // Redirect based on role
+                if (role === 'admin') {
+                    navigate('/admin-dashboard');
+                } else {
+                    navigate('/user-dashboard');
+                }
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+        }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(formData);
-        // Handle form submission, e.g., send data to your backend
-    };
+    if (loading) return <h1 className="text-center text-gray-500">Loading...</h1>;
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded shadow-md w-96">
-                <h5 className="text-2xl font-bold mb-6 text-center">Login</h5>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        name="email"
-                        onChange={handleChange}
-                        required
-                        className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:border-purple-500"
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        name="password"
-                        onChange={handleChange}
-                        required
-                        className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:border-purple-500"
-                    />
-                    <div className="flex space-x-4">
-                        <button
-                            type="button"
-                            className={`p-2 w-full rounded ${formData.role === 'admin' ? 'bg-purple-600 text-white' : 'bg-gray-300'}`}
-                            onClick={() => handleRoleSelect('admin')}
-                        >
-                            Admin
-                        </button>
-                        <button
-                            type="button"
-                            className={`p-2 w-full rounded ${formData.role === 'user' ? 'bg-purple-600 text-white' : 'bg-gray-300'}`}
-                            onClick={() => handleRoleSelect('user')}
-                        >
-                            User
-                        </button>
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+                {error && <div className='text-red-600 mb-4'>{error.message}</div>}
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
+                            Email
+                        </label>
+                        <input
+                            id="email"
+                            type="email"
+                            placeholder="Email"
+                            name="email"
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
                     </div>
-                    <button className="bg-purple-600 text-white p-2 w-full rounded hover:bg-purple-700 focus:outline-none" type="submit">Login</button>
+                    <div className="mb-6">
+                        <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">
+                            Password
+                        </label>
+                        <input
+                            id="password"
+                            type="password"
+                            placeholder="Password"
+                            name="password"
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        Login
+                    </button>
                 </form>
             </div>
         </div>

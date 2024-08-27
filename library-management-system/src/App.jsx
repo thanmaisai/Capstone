@@ -1,17 +1,17 @@
-import { useState } from 'react'
-import './App.css'
-import Login from './components/Login'
-import Signup from './components/Signup'
-import UserProfile from './components/UserProfile'
+import { useRoutes } from 'react-router-dom';
+import NavBar from './components/Navbar';
+import { routes } from './routes';
+import './App.css';
 
 function App() {
+  const element = useRoutes(routes);
+  
   return (
     <>
-      {/* <Login/> */}
-      {/* <Signup/> */}
-      <UserProfile/>
+      <NavBar />
+      {element}
     </>
-  )
+  );
 }
 
-export default App
+export default App;

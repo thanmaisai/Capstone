@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { SIGNUP_USER } from '../gqloperations/mutations'; // Adjust the path as necessary
 
 export default function Signup() {
     const [formData, setFormData] = useState({
@@ -6,8 +8,9 @@ export default function Signup() {
         lastName: '',
         email: '',
         password: '',
-        role: ''
+        role: 'user' // Default role
     });
+    const [signupUser, { data, loading, error }] = useMutation(SIGNUP_USER);
 
     const handleChange = (e) => {
         setFormData({
@@ -25,8 +28,9 @@ export default function Signup() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
-        // Handle form submission, e.g., send data to your backend
+        signupUser({
+            variables: { userNew: formData }
+        });
     };
 
     return (
@@ -34,10 +38,19 @@ export default function Signup() {
             <div className="bg-white p-8 rounded shadow-md w-96">
                 <h5 className="text-2xl font-bold mb-6 text-center">Sign Up</h5>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {loading && <p>Loading...</p>}
+                    {error && <div className="bg-red-500 text-white p-2 rounded">{error.message}</div>}
+                    {data && data.signupUser && (
+                        <div className="bg-green-500 text-white p-2 rounded">
+                            {data.signupUser.firstName} is signed up. You can log in now!
+                        </div>
+                    )}
+                    
                     <input
                         type="text"
                         placeholder="First Name"
                         name="firstName"
+                        value={formData.firstName}
                         onChange={handleChange}
                         required
                         className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:border-purple-500"
@@ -46,6 +59,7 @@ export default function Signup() {
                         type="text"
                         placeholder="Last Name"
                         name="lastName"
+                        value={formData.lastName}
                         onChange={handleChange}
                         required
                         className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:border-purple-500"
@@ -54,6 +68,7 @@ export default function Signup() {
                         type="email"
                         placeholder="Email"
                         name="email"
+                        value={formData.email}
                         onChange={handleChange}
                         required
                         className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:border-purple-500"
@@ -62,6 +77,7 @@ export default function Signup() {
                         type="password"
                         placeholder="Password"
                         name="password"
+                        value={formData.password}
                         onChange={handleChange}
                         required
                         className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:border-purple-500"

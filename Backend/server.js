@@ -1,15 +1,19 @@
-import { ApolloServer } from 'apollo-server'
-import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
-import typeDefs from './schemaGql.js'
-
-import mongoose from 'mongoose'
+import { ApolloServer } from 'apollo-server';
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
+import typeDefs from './schemaGql.js';
+import resolvers from './resolvers.js';
+import User from './models/user.js';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 
+// Load environment variables
 dotenv.config();
-import jwt from 'jsonwebtoken'
 
-// mongoDb
-mongoose.connect(process.env.MONGO_URI);
+const { MONGO_URI, JWT_SECRET } = process.env;
+
+// Connect to MongoDB
+mongoose.connect(MONGO_URI);
 
 mongoose.connection.on('connected', () => {
     console.log('Connected to MongoDB');
@@ -19,17 +23,22 @@ mongoose.connection.on('error', (err) => {
     console.log('Error connecting to MongoDB:', err);
 });
 
-import resolvers from './resolvers.js'
-import User from './models/user.js';
+// Context function to handle JWT
 const context = ({ req }) => {
     const { authorization } = req.headers;
-  
+
     if (authorization) {
-      const { userId } = jwt.verify(authorization, JWT_SECRET);
-  
-      return { userId };
+        try {
+            const { userId } = jwt.verify(authorization.replace('Bearer ', ''), JWT_SECRET);
+            return { userId };
+        } catch (error) {
+            throw new Error('Invalid or expired token');
+        }
     }
-  }
+    
+    return {};
+};
+
 // Apollo Server
 const server = new ApolloServer({ 
     typeDefs, 
