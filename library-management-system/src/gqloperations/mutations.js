@@ -22,3 +22,55 @@ export const LOGIN_USER = gql`
         }
     }
 `;
+
+export const ADD_BOOK_MUTATION = gql`
+  mutation AddBook(
+    $title: String!,
+    $author: String!,
+    $category: String!,
+    $image: String!,
+    $available: Int!,
+    $borrowed: Int!
+  ) {
+    addBook(bookInput: {
+      title: $title,
+      author: $author,
+      category: $category,
+      image: $image,
+      available: $available,
+      borrowed: $borrowed
+    }) {
+      _id
+      title
+      author
+      category
+      image
+      available
+      borrowed
+    }
+  }
+`;
+
+export const GET_BOOKS = gql`
+  query {
+    books {
+      _id
+      title
+      author
+      category
+      image
+      available
+      borrowed
+    }
+  }
+`;
+
+export const DELETE_BOOK = gql`
+  mutation DeleteBook($_id: ID!) {
+    deleteBook(_id: $_id) {
+      _id
+      title
+      author
+    }
+  }
+`;
