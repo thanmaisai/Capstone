@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_BOOKS, DELETE_BOOK } from '../gqloperations/mutations';
 import AddBookModal from './AddBookForm';
+import UpdateBookModal from './UpdateBookForm';
 import BooksList from './BooksList';
 
 const AdminDashboard = () => {
@@ -12,6 +13,8 @@ const AdminDashboard = () => {
   });
 
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
 
   const handleDelete = async (bookId) => {
     try {
@@ -19,6 +22,11 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error("Error deleting book:", error);
     }
+  };
+
+  const handleUpdate = (book) => {
+    setSelectedBook(book);
+    setUpdateModalOpen(true);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -34,8 +42,9 @@ const AdminDashboard = () => {
         Add New Book
       </button>
       <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      <UpdateBookModal isOpen={isUpdateModalOpen} onClose={() => setUpdateModalOpen(false)} book={selectedBook} />
       <div className="mt-8">
-        <BooksList books={data.books} onDelete={handleDelete} />
+        <BooksList books={data.books} onDelete={handleDelete} onUpdate={handleUpdate} />
       </div>
     </div>
   );

@@ -74,3 +74,35 @@ export const DELETE_BOOK = gql`
     }
   }
 `;
+
+export const UPDATE_BOOK = gql`
+  mutation UpdateBook(
+    $_id: ID!,
+    $title: String!,
+    $author: String!,
+    $category: String!,
+    $image: String!,
+    $available: Int!,
+    $borrowed: Int!
+  ) {
+    updateBook(
+      _id: $_id,
+      bookInput: {
+        title: $title,
+        author: $author,
+        category: $category,
+        image: $image,
+        available: $available,
+        borrowed: $borrowed
+      }
+    ) {
+      _id
+      title
+      author
+      category
+      image
+      available
+      borrowed
+    }
+  }
+`;

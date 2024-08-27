@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BooksList = ({ books, onDelete }) => {
+const BooksList = ({ books, onDelete, onUpdate }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {books.length === 0 ? (
@@ -17,12 +17,20 @@ const BooksList = ({ books, onDelete }) => {
                 <p className="text-gray-600">Available: <span className="font-semibold text-green-600">{book.available}</span></p>
                 <p className="text-gray-600">Borrowed: <span className="font-semibold text-red-600">{book.borrowed}</span></p>
               </div>
-              <button
-                onClick={() => onDelete(book._id)}
-                className="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
-              >
-                Delete
-              </button>
+              <div className="flex space-x-2 mt-4">
+                <button
+                  onClick={() => onDelete(book._id)}
+                  className="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => onUpdate(book)}
+                  className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  Update
+                </button>
+              </div>
             </div>
           </div>
         ))
