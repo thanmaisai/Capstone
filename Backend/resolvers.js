@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 import User from './models/user.js';
 import jwt from 'jsonwebtoken';
+import Book from './models/book.js';
 
 const resolvers = {
     Query: {
@@ -10,6 +11,12 @@ const resolvers = {
         },
         user: async (_, { _id }) => {
             return await User.findById(_id);
+        },
+        books: async () => {
+            return await Book.find();
+        },
+        book: async (_, { _id }) => {
+            return await Book.findById(_id);
         },
     },
     Mutation: {
@@ -43,6 +50,40 @@ const resolvers = {
             const token = jwt.sign({ userId: user._id ,role:user.role }, process.env.JWT_SECRET);
             return { token , role:user.role};
         },
+        addBook: async (_, { bookInput }) => {
+            try {
+                const newBook = new Book(bookInput);
+                await newBook.save();
+                return newBook;
+            } catch (error) {
+                console.error("Error adding book:", error);
+                throw new Error("Error adding book");
+            }
+        },
+        updateBook: async (_, { _id, bookInput }) => {
+            try {
+                const updatedBook = await Book.findByIdAndUpdate(_id, bookInput, { new: true });
+                if (!updatedBook) {
+                    throw new Error("Book not found");
+                }
+                return updatedBook;
+            } catch (error) {
+                console.error("Error updating book:", error);
+                throw new Error("Error updating book");
+            }
+        },
+        deleteBook: async (_, { _id }) => {
+            try {
+                const deletedBook = await Book.findByIdAndDelete(_id);
+                if (!deletedBook) {
+                    throw new Error(`Book with ID ${_id} not found`);
+                }
+                return deletedBook;
+            } catch (error) {
+                console.error("Error deleting book:", error);
+                throw new Error(error.message || "Error deleting book");
+            }
+        }        
     }
 };
 
