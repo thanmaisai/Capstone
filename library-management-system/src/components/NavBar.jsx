@@ -16,7 +16,6 @@ export default function NavBar() {
         setPopupMessage("Logged in as User");
       }
       setShowPopup(true);
-      // Hide the popup after 3 seconds
       const timer = setTimeout(() => {
         setShowPopup(false);
       }, 3000);
@@ -28,7 +27,7 @@ export default function NavBar() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    setUser(null); // Clear user state
+    setUser(null);
     navigate("/login");
   };
 
@@ -40,14 +39,24 @@ export default function NavBar() {
           {user ? (
             <>
               {user.role === "admin" ? (
-                <li>
-                  <Link
-                    to="/admin-dashboard"
-                    className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    Admin Dashboard
-                  </Link>
-                </li>
+                <>
+                  <li>
+                    <Link
+                      to="/admin-dashboard"
+                      className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      Admin Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/manage-books"
+                      className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      Manage Books
+                    </Link>
+                  </li>
+                </>
               ) : user.role === "user" ? (
                 <li>
                   <Link
