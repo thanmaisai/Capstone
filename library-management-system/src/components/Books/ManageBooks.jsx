@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-
 import AddBookModal from '../Admins/AddBookForm';
 import UpdateBookModal from '../Users/UpdateBookForm';
 import BooksList from '../Books/BooksList';
 import SearchBar from '../Search/SearchBar';
-
 import { GET_BOOKS, DELETE_BOOK } from '../../gqloperations/mutations';
 
 const ManageBooks = () => {
@@ -38,6 +36,10 @@ const ManageBooks = () => {
     book.category.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  const handleBookAdded = () => {
+    refetch(); // Refetch books after adding a new book
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading books: {error.message}</p>;
 
@@ -50,7 +52,7 @@ const ManageBooks = () => {
       >
         Add New Book
       </button>
-      <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onBookAdded={handleBookAdded} />
       <UpdateBookModal isOpen={isUpdateModalOpen} onClose={() => setUpdateModalOpen(false)} book={selectedBook} />
       <SearchBar
         searchText={searchText}
