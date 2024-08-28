@@ -35,9 +35,9 @@ export default function Login() {
 
                 // Redirect based on role
                 if (role === 'admin') {
-                    navigate('/admin-dashboard');
+                    navigate('/admin-dashboard', { state: { role } });
                 } else {
-                    navigate('/user-dashboard');
+                    navigate('/user-dashboard', { state: { role } });
                 }
             }
         } catch (error) {
