@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
+
 const UserDashboard = () => {
     const location = useLocation();
     const { role } = location.state || {};
-
-    // Filter books based on search text
-    const filteredBooks = data?.books.filter(book =>
-        book.title.toLowerCase().includes(searchText.toLowerCase()) ||
-        book.category.toLowerCase().includes(searchText.toLowerCase())
-    );
+    console.log("user Dashboard",role);
 
     return (
         <div className="min-h-screen bg-gray-100 p-8">

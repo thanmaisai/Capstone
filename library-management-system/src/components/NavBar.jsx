@@ -65,6 +65,12 @@ export default function NavBar() {
                   >
                     User Dashboard
                   </Link>
+                  <Link
+                    to="/all-books"
+                    className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    All Books
+                  </Link>
                 </li>
               ) : null}
               <li>

@@ -9,9 +9,9 @@ const AllBooks = () => {
     const { user } = useUser();
     const { loading, error, data } = useQuery(GET_BOOKS);
     const [searchText, setSearchText] = useState('');
-
+    console.log(user);
     if (!user || user.role !== 'user') {
-        return <p>Unauthorized access</p>;  // Ensure only users can access this component
+        return <p>Unauthorized access</p>;
     }
 
     if (loading) return <p>Loading...</p>;
