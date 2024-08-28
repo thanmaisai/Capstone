@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
-import { LOGIN_USER } from '../../gqloperations/mutations';
 import { useNavigate } from 'react-router-dom';
+import { LOGIN_USER } from '../../gqloperations/mutations';
+import { useUser } from '../UserContext';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -9,6 +10,7 @@ export default function Login() {
         email: '',
         password: '',
     });
+    const { setUser } = useUser(); // Destructure setUser from useUser
     const [signinUser, { data, loading, error }] = useMutation(LOGIN_USER);
 
     const handleChange = (e) => {
@@ -31,7 +33,10 @@ export default function Login() {
                 const { token, role } = result.data.signinUser;
                 localStorage.setItem("token", token);
 
-                console.log("User role" + role);
+                // Set the user role in the context
+                setUser({ role });
+
+                console.log("User role: " + role);
 
                 // Redirect based on role
                 if (role === 'admin') {
