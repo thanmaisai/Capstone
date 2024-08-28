@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-
 import { useQuery, useMutation } from '@apollo/client';
 
 import AddBookModal from './AddBookForm';
 import UpdateBookModal from '../Users/UpdateBookForm';
-
 import BooksList from '../Books/BooksList';
+import SearchBar from '../Search/SearchBar';
 
 import { GET_BOOKS, DELETE_BOOK } from '../../gqloperations/mutations';
 
 const AdminDashboard = () => {
   const location = useLocation();
   const { role } = location.state || {}; 
-  
+
   const { data, loading, error, refetch } = useQuery(GET_BOOKS);
   const [deleteBook] = useMutation(DELETE_BOOK, {
     onCompleted: () => refetch(),
@@ -23,6 +22,7 @@ const AdminDashboard = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [searchText, setSearchText] = useState(''); // State for search text
 
   const handleDelete = async (bookId) => {
     try {
@@ -36,6 +36,11 @@ const AdminDashboard = () => {
     setSelectedBook(book);
     setUpdateModalOpen(true);
   };
+
+  const filteredBooks = data?.books.filter(book =>
+    book.title.toLowerCase().includes(searchText.toLowerCase()) ||
+    book.category.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading books: {error.message}</p>;
@@ -51,9 +56,14 @@ const AdminDashboard = () => {
       </button>
       <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
       <UpdateBookModal isOpen={isUpdateModalOpen} onClose={() => setUpdateModalOpen(false)} book={selectedBook} />
+      <SearchBar
+        searchText={searchText}
+        setSearchText={setSearchText}
+        onSearch={() => {}}
+      />
       <div className="mt-8">
         <BooksList
-          books={data.books}
+          books={filteredBooks}
           role={role}
           onDelete={handleDelete}
           onUpdate={handleUpdate}
