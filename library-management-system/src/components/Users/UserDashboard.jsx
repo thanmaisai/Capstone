@@ -1,10 +1,12 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 
 const UserDashboard = () => {
-    const location = useLocation();
-    const { role } = location.state || {};
-    console.log("user Dashboard",role);
+    const [role, setRole] = useState(null);
+
+    useEffect(() => {
+        const storedRole = localStorage.getItem('role');
+        setRole(storedRole);
+    }, []);
 
     return (
         <div className="min-h-screen bg-gray-100 p-8">

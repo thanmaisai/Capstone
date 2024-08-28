@@ -32,6 +32,7 @@ export default function Login() {
             if (result.data) {
                 const { token, role } = result.data.signinUser;
                 localStorage.setItem("token", token);
+                localStorage.setItem("role",role);
 
                 // Set the user role in the context
                 setUser({ role });

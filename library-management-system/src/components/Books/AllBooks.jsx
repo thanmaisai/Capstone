@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_BOOKS } from '../../gqloperations/mutations';
 import BooksList from '../Books/BooksList';
-import SearchBar from '../Search/SearchBar'; 
-import { useUser } from '../UserContext';
+import SearchBar from '../Search/SearchBar';
 
 const AllBooks = () => {
-    const { user } = useUser();
     const { loading, error, data } = useQuery(GET_BOOKS);
     const [searchText, setSearchText] = useState('');
-    console.log(user);
-    if (!user || user.role !== 'user') {
+    const role = localStorage.getItem("role");
+
+    if (role !== 'user') {
         return <p>Unauthorized access</p>;
     }
 
