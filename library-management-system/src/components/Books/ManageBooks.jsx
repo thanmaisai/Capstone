@@ -4,13 +4,16 @@ import AddBookModal from '../Admins/AddBookForm';
 import UpdateBookModal from '../Users/UpdateBookForm';
 import BooksList from '../Books/BooksList';
 import SearchBar from '../Search/SearchBar';
-import { GET_BOOKS, DELETE_BOOK } from '../../gqloperations/mutations';
+import { GET_BOOKS, DELETE_BOOK, BORROW_BOOK } from '../../gqloperations/mutations';
 
 const ManageBooks = () => {
   const { data, loading, error, refetch } = useQuery(GET_BOOKS);
   const [deleteBook] = useMutation(DELETE_BOOK, {
     onCompleted: () => refetch(),
     onError: (error) => console.error("Error deleting book:", error),
+  });
+  const [borrowBook] = useMutation(BORROW_BOOK, {
+    refetchQueries: [{ query: GET_BOOKS }],
   });
 
   const [isModalOpen, setModalOpen] = useState(false);
@@ -29,6 +32,14 @@ const ManageBooks = () => {
   const handleUpdate = (book) => {
     setSelectedBook(book);
     setUpdateModalOpen(true);
+  };
+
+  const handleBorrow = async (bookId) => {
+    try {
+      await borrowBook({ variables: { _id: bookId } });
+    } catch (error) {
+      console.error("Error borrowing book:", error);
+    }
   };
 
   const filteredBooks = data?.books.filter(book =>
@@ -65,6 +76,7 @@ const ManageBooks = () => {
           onDelete={handleDelete}
           onUpdate={handleUpdate}
           role="admin"
+          onBorrow={handleBorrow} // Pass onBorrow if needed for admin actions
         />
       </div>
     </div>

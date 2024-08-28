@@ -1,6 +1,20 @@
 import React from 'react';
+import { useMutation } from '@apollo/client';
+import { BORROW_BOOK, GET_BOOKS } from '../../gqloperations/mutations';
 
-const BooksList = ({ books, role, onDelete, onUpdate, onBorrow }) => {
+const BooksList = ({ books, role, onDelete, onUpdate }) => {
+  const [borrowBook] = useMutation(BORROW_BOOK, {
+    refetchQueries: [{ query: GET_BOOKS }],
+  });
+
+  const handleBorrow = async (bookId) => {
+    try {
+      await borrowBook({ variables: { _id: bookId } });
+    } catch (error) {
+      console.error("Error borrowing book:", error);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {books.length === 0 ? (
@@ -35,7 +49,7 @@ const BooksList = ({ books, role, onDelete, onUpdate, onBorrow }) => {
                   </>
                 ) : (
                   <button
-                    onClick={() => onBorrow(book._id)}
+                    onClick={() => handleBorrow(book._id)}
                     className="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors"
                   >
                     Borrow

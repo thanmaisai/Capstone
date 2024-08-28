@@ -83,7 +83,29 @@ const resolvers = {
                 console.error("Error deleting book:", error);
                 throw new Error(error.message || "Error deleting book");
             }
-        }        
+        },
+        borrowBook: async (_, { _id }) => {
+            try {
+                const book = await Book.findById(_id);
+                if (!book) {
+                    throw new Error("Book not found");
+                }
+                if (book.available <= 0) {
+                    throw new Error("No copies available to borrow");
+                }
+
+                // Update book counts
+                book.available -= 1;
+                book.borrowed += 1;
+                book.isBorrowed = true;
+                await book.save();
+
+                return book;
+            } catch (error) {
+                console.error("Error borrowing book:", error);
+                throw new Error("Error borrowing book");
+            }
+        }
     }
 };
 
