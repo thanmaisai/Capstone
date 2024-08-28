@@ -4,8 +4,12 @@ import { GET_BOOKS, DELETE_BOOK } from '../gqloperations/mutations';
 import AddBookModal from './AddBookForm';
 import UpdateBookModal from './UpdateBookForm';
 import BooksList from './BooksList';
+import { useLocation } from 'react-router-dom';
 
 const AdminDashboard = () => {
+  const location = useLocation();
+  const { role } = location.state || {}; 
+  
   const { data, loading, error, refetch } = useQuery(GET_BOOKS);
   const [deleteBook] = useMutation(DELETE_BOOK, {
     onCompleted: () => refetch(),
@@ -44,7 +48,12 @@ const AdminDashboard = () => {
       <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
       <UpdateBookModal isOpen={isUpdateModalOpen} onClose={() => setUpdateModalOpen(false)} book={selectedBook} />
       <div className="mt-8">
-        <BooksList books={data.books} onDelete={handleDelete} onUpdate={handleUpdate} />
+        <BooksList
+          books={data.books}
+          role={role}
+          onDelete={handleDelete}
+          onUpdate={handleUpdate}
+        />
       </div>
     </div>
   );
