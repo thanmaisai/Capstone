@@ -4,6 +4,8 @@ const typeDefs = gql`
  type Query {
     users: [User]
     user(_id: ID!): User
+    books: [Book]
+    book(_id: ID!): Book
  }
 
  type User {
@@ -20,9 +22,22 @@ const typeDefs = gql`
     role:String
  }
 
+ type Book {
+    _id: ID!
+    title: String!
+    author: String!
+    category: String!
+    image: String!
+    available: Int!
+    borrowed: Int!
+ }
+
  type Mutation {
      signupUser(userNew: UserInput!): User
-     signinUser(userSignin:UserSigninInput!): Token
+     signinUser(userSignin: UserSigninInput!): Token
+     addBook(bookInput: BookInput!): Book
+     updateBook(_id: ID!, bookInput: BookInput!): Book
+     deleteBook(_id: ID!): Book
  }
 
  input UserInput {
@@ -37,6 +52,15 @@ const typeDefs = gql`
     email: String!
     password: String!
  }
+
+ input BookInput {
+    title: String!
+    author: String!
+    category: String!
+    image: String!
+    available: Int!
+    borrowed: Int!
+ }
 `
-//  role: String ->add to check for userSignInput
+
 export default typeDefs
