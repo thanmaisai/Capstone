@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from '../components/UserContext';
 
 export default function NavBar() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
-  const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("role"); // Assuming the role is stored in local storage
+  const { user, setUser } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (token) {
-      if (userRole === "admin") {
+    if (user) {
+      if (user.role === "admin") {
         setPopupMessage("Logged in as Admin");
-      } else if (userRole === "user") {
+      } else if (user.role === "user") {
         setPopupMessage("Logged in as User");
       }
       setShowPopup(true);
@@ -23,18 +23,23 @@ export default function NavBar() {
 
       return () => clearTimeout(timer);
     }
-  }, [token, userRole]);
+  }, [user]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    setUser(null); // Clear user state
+    navigate("/login");
+  };
 
   return (
     <nav className="bg-purple-700 text-white shadow-md">
       <div className="container mx-auto flex items-center justify-between p-4">
-        <div>
-        Home
-        </div>
+        <div>Home</div>
         <ul className="flex space-x-4">
-          {token ? (
+          {user ? (
             <>
-              {userRole === "admin" ? (
+              {user.role === "admin" ? (
                 <li>
                   <Link
                     to="/admin-dashboard"
@@ -43,7 +48,7 @@ export default function NavBar() {
                     Admin Dashboard
                   </Link>
                 </li>
-              ) : userRole === "user" ? (
+              ) : user.role === "user" ? (
                 <li>
                   <Link
                     to="/user-dashboard"
@@ -56,11 +61,7 @@ export default function NavBar() {
               <li>
                 <button
                   className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-                  onClick={() => {
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("role");
-                    navigate("/login");
-                  }}
+                  onClick={handleLogout}
                 >
                   Logout
                 </button>
