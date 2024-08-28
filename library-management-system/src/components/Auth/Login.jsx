@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
-import { LOGIN_USER } from '../gqloperations/mutations';
+import { LOGIN_USER } from '../../gqloperations/mutations';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {

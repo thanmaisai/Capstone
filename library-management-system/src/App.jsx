@@ -1,6 +1,6 @@
 import { useRoutes } from 'react-router-dom';
 import NavBar from './components/Navbar';
-import { routes } from './routes';
+import { routes } from './Route/routes';
 import './App.css';
 
 function App() {

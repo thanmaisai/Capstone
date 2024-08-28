@@ -1,8 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { GET_BOOKS } from '../gqloperations/mutations';
-import BooksList from './BooksList';
+import { GET_BOOKS } from '../../gqloperations/mutations';
+import BooksList from '../Books/BooksList';
 
 const UserDashboard = () => {
     const location = useLocation();

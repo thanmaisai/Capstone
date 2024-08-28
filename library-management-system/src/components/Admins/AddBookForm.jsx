@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { ADD_BOOK_MUTATION } from '../gqloperations/mutations';
+import { ADD_BOOK_MUTATION } from '../../gqloperations/mutations';
 
 const AddBookModal = ({ isOpen, onClose }) => {
   const [addBook, { error }] = useMutation(ADD_BOOK_MUTATION);

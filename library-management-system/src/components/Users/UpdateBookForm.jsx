@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
-import { UPDATE_BOOK } from '../gqloperations/mutations';
+import { UPDATE_BOOK } from '../../gqloperations/mutations';
 
 const UpdateBookModal = ({ isOpen, onClose, book }) => {
   const [formData, setFormData] = useState({

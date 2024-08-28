@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { SIGNUP_USER } from '../gqloperations/mutations'; // Adjust the path as necessary
+import { SIGNUP_USER } from '../../gqloperations/mutations'; // Adjust the path as necessary
 
 export default function Signup() {
     const [formData, setFormData] = useState({

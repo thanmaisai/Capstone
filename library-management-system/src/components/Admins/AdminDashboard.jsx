@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-import { GET_BOOKS, DELETE_BOOK } from '../gqloperations/mutations';
-import AddBookModal from './AddBookForm';
-import UpdateBookModal from './UpdateBookForm';
-import BooksList from './BooksList';
 import { useLocation } from 'react-router-dom';
+
+import { useQuery, useMutation } from '@apollo/client';
+
+import AddBookModal from './AddBookForm';
+import UpdateBookModal from '../Users/UpdateBookForm';
+
+import BooksList from '../Books/BooksList';
+
+import { GET_BOOKS, DELETE_BOOK } from '../../gqloperations/mutations';
 
 const AdminDashboard = () => {
   const location = useLocation();
