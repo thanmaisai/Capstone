@@ -15,12 +15,16 @@ export const SIGNUP_USER = gql`
 
 // Mutation for logging in a user
 export const LOGIN_USER = gql`
-    mutation signinUser($userSignin: UserSigninInput!) {
-        signinUser(userSignin: $userSignin) {
-            token
-            role
-        }
+  mutation SigninUser($email: String!, $password: String!) {
+    signinUser(email: $email, password: $password) {
+      token
+      user {
+        _id
+        email
+        role
+       }
     }
+  }
 `;
 
 export const ADD_BOOK_MUTATION = gql`
@@ -50,19 +54,16 @@ export const ADD_BOOK_MUTATION = gql`
     }
   }
 `;
-
 export const GET_BOOKS = gql`
-  query {
-    books {
-      _id
-      title
-      author
-      category
-      image
-      available
-      borrowed
+    query {
+        books {
+            _id
+            title
+            author
+            category
+            image
+        }
     }
-  }
 `;
 
 export const DELETE_BOOK = gql`

@@ -12,6 +12,9 @@ const resolvers = {
         user: async (_, { _id }) => {
             return await User.findById(_id);
         },
+        user: async (_, { _id }) => {
+            return await User.findById(_id).populate('borrowedBooks');
+        },        
         books: async () => {
             return await Book.find();
         },
@@ -39,7 +42,7 @@ const resolvers = {
             }
         },
         signinUser: async (_, { userSignin }) => {
-            const user = await User.findOne({ email: userSignin.email });
+            const user = await User.findOne({ email: userSignin.email }).populate('borrowedBooks');
             if (!user) {
                 throw new Error("User doesn't exist with that email");
             }
@@ -47,9 +50,9 @@ const resolvers = {
             if (!doMatch) {
                 throw new Error("Email or password is invalid");
             }
-            const token = jwt.sign({ userId: user._id ,role:user.role }, process.env.JWT_SECRET);
-            return { token , role:user.role};
-        },
+            const token = jwt.sign({ userId: user._id , role: user.role }, process.env.JWT_SECRET);
+            return { token, user };
+        },        
         addBook: async (_, { bookInput }) => {
             try {
                 const newBook = new Book(bookInput);
@@ -84,7 +87,11 @@ const resolvers = {
                 throw new Error(error.message || "Error deleting book");
             }
         },
-        borrowBook: async (_, { _id }) => {
+        borrowBook: async (_, { _id }, { userId }) => {
+            if (!userId) {
+                throw new Error("You must be logged in to borrow a book");
+            }
+        
             try {
                 const book = await Book.findById(_id);
                 if (!book) {
@@ -93,20 +100,25 @@ const resolvers = {
                 if (book.available <= 0) {
                     throw new Error("No copies available to borrow");
                 }
-
+        
                 // Update book counts
                 book.available -= 1;
                 book.borrowed += 1;
                 book.isBorrowed = true;
                 await book.save();
-
+        
+                // Update user's borrowedBooks
+                await User.findByIdAndUpdate(userId, {
+                    $push: { borrowedBooks: book._id }
+                });
+        
                 return book;
             } catch (error) {
                 console.error("Error borrowing book:", error);
                 throw new Error("Error borrowing book");
             }
         }
-    }
+    }        
 };
 
 export default resolvers;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../UserContext';
 import { useQuery } from '@apollo/client';
-import { GET_BOOKS } from '../../gqloperations/mutations'; 
+import { GET_BOOKS } from '../../gqloperations/mutations';
 
 const UserDashboard = () => {
     const { user } = useUser();
@@ -9,8 +9,8 @@ const UserDashboard = () => {
     const { data, loading, error } = useQuery(GET_BOOKS);
 
     useEffect(() => {
-        if (data && user && user.borrowedBooks) {
-            const borrowedBookIds = new Set(user.borrowedBooks);
+        if (data && user && Array.isArray(user.borrowedBooks)) {
+            const borrowedBookIds = new Set(user.borrowedBooks.map(book => book._id)); // Ensure this is an array of IDs
             const filteredBorrowedBooks = data.books.filter(book => borrowedBookIds.has(book._id));
             setBorrowedBooks(filteredBorrowedBooks);
         }

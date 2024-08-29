@@ -14,18 +14,18 @@ export const UserProvider = ({ children }) => {
 
   const login = (userData) => {
     const updatedUser = {
-      ...userData,
-      borrowedBooks: userData.borrowedBooks || [], // Ensure borrowedBooks is an array
+      ...userData.user,
+      token: userData.token,
     };
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));
+    localStorage.setItem('token', userData.token);
   };
-
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   };
-
   const borrowBook = (bookId) => {
     if (!user) return; // Exit if user is not available
 

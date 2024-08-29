@@ -17,10 +17,10 @@ const typeDefs = gql`
      role: String!
  }
 
- type Token {
+type Token {
     token: String
-    role: String
- }
+    user: User
+}
 
  type Book {
     _id: ID!

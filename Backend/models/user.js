@@ -2,28 +2,29 @@ import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
     firstName: {
-        type: String,
-        required: true
-    },
-    lastName: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    role: {
-        type: String,
-        required: true,
-        enum: ["user", "admin"],  
-        default: "user"
-    }
+                type: String,
+                required: true
+            },
+            lastName: {
+                type: String,
+                required: true
+            },
+            email: {
+                type: String,
+                required: true,
+                unique: true
+            },
+            password: {
+                type: String,
+                required: true
+            },
+            role: {
+                type: String,
+                required: true,
+                enum: ["user", "admin"],  
+                default: "user"
+            },
+            borrowedBooks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book' }]
 });
 
 const User = mongoose.model("User", userSchema);
