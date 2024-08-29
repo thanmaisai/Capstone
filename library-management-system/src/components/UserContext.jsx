@@ -13,8 +13,12 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    const updatedUser = {
+      ...userData,
+      borrowedBooks: userData.borrowedBooks || [], // Ensure borrowedBooks is an array
+    };
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
   const logout = () => {
@@ -23,9 +27,11 @@ export const UserProvider = ({ children }) => {
   };
 
   const borrowBook = (bookId) => {
+    if (!user) return; // Exit if user is not available
+
     const updatedUser = {
       ...user,
-      borrowedBooks: [...user.borrowedBooks, bookId],
+      borrowedBooks: [...(user.borrowedBooks || []), bookId],
     };
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));

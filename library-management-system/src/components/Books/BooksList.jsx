@@ -1,17 +1,28 @@
 import React from 'react';
 import { useMutation } from '@apollo/client';
 import { BORROW_BOOK, GET_BOOKS } from '../../gqloperations/mutations';
+import { useUser } from '../UserContext';
 
 const BooksList = ({ books, role, onDelete, onUpdate }) => {
-  const [borrowBook] = useMutation(BORROW_BOOK, {
+  const { borrowBook } = useUser(); // Get borrowBook function from context
+  const [borrowBookMutation] = useMutation(BORROW_BOOK, {
     refetchQueries: [{ query: GET_BOOKS }],
   });
 
   const handleBorrow = async (bookId) => {
     try {
-      await borrowBook({ variables: { _id: bookId } });
+      console.log('Attempting to borrow book with ID:', bookId);
+      
+      const { data } = await borrowBookMutation({ variables: { _id: bookId } });
+      console.log('Borrow Book Mutation Response:', data);
+
+      // Update context with borrowed book ID
+      borrowBook(bookId);
+
+      console.log('Book borrowed successfully:', data.borrowBook);
+      
     } catch (error) {
-      console.error("Error borrowing book:", error);
+      console.error('Error borrowing book:', error);
     }
   };
 
