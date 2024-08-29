@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from '../components/UserContext';
+import ProfileModal from './ProfileModal'; // Import the ProfileModal component
 
 export default function NavBar() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
+  const [showProfileModal, setShowProfileModal] = useState(false); // State to control modal visibility
   const { user, logout } = useUser();
   const navigate = useNavigate();
 
@@ -29,7 +31,7 @@ export default function NavBar() {
     <nav className="bg-purple-700 text-white shadow-md">
       <div className="container mx-auto flex items-center justify-between p-4">
         <div>Home</div>
-        <ul className="flex space-x-4">
+        <ul className="flex items-center space-x-4">
           {user ? (
             <>
               {user.role === "admin" && (
@@ -80,6 +82,14 @@ export default function NavBar() {
                   Logout
                 </button>
               </li>
+              <li>
+                <img
+                  src={`https://robohash.org/${user.id}`}
+                  alt="User Avatar"
+                  className="w-10 h-10 rounded-full border-2 border-white cursor-pointer"
+                  onClick={() => setShowProfileModal(true)} // Open modal on click
+                />
+              </li>
             </>
           ) : (
             <>
@@ -108,6 +118,7 @@ export default function NavBar() {
           {popupMessage}
         </div>
       )}
+      {showProfileModal && <ProfileModal onClose={() => setShowProfileModal(false)} />} {/* Render the modal */}
     </nav>
   );
 }

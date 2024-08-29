@@ -8,9 +8,11 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
+      console.log('Stored User Data:', JSON.parse(storedUser));
       setUser(JSON.parse(storedUser));
     }
   }, []);
+  
 
   const login = (userData) => {
     const updatedUser = {
@@ -19,7 +21,7 @@ export const UserProvider = ({ children }) => {
     };
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));
-  };
+  };  
 
   const logout = () => {
     setUser(null);
