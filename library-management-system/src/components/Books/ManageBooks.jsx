@@ -64,7 +64,12 @@ const ManageBooks = () => {
         Add New Book
       </button>
       <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onBookAdded={handleBookAdded} />
-      <UpdateBookModal isOpen={isUpdateModalOpen} onClose={() => setUpdateModalOpen(false)} book={selectedBook} />
+      <UpdateBookModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        book={selectedBook}
+        refetch={refetch} // Pass refetch function
+      />
       <SearchBar
         searchText={searchText}
         setSearchText={setSearchText}
@@ -76,7 +81,7 @@ const ManageBooks = () => {
           onDelete={handleDelete}
           onUpdate={handleUpdate}
           role="admin"
-          onBorrow={handleBorrow} // Pass onBorrow if needed for admin actions
+          onBorrow={handleBorrow}
         />
       </div>
     </div>

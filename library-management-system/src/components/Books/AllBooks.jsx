@@ -1,7 +1,8 @@
+// components/Books/AllBooks.jsx
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_BOOKS, BORROW_BOOK } from '../../gqloperations/mutations';
-import BooksList from '../Books/BooksList';
+import BooksList from './BooksList';
 import SearchBar from '../Search/SearchBar';
 
 const AllBooks = () => {

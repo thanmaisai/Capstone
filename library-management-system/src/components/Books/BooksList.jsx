@@ -4,7 +4,7 @@ import { BORROW_BOOK, GET_BOOKS } from '../../gqloperations/mutations';
 import { useUser } from '../UserContext';
 
 const BooksList = ({ books, role, onDelete, onUpdate }) => {
-  const { borrowBook } = useUser(); // Get borrowBook function from context
+  const { user, borrowBook } = useUser(); // Get user and borrowBook function from context
   const [borrowBookMutation] = useMutation(BORROW_BOOK, {
     refetchQueries: [{ query: GET_BOOKS }],
   });
@@ -12,7 +12,7 @@ const BooksList = ({ books, role, onDelete, onUpdate }) => {
   const handleBorrow = async (bookId) => {
     try {
       console.log('Attempting to borrow book with ID:', bookId);
-      
+
       const { data } = await borrowBookMutation({ variables: { _id: bookId } });
       console.log('Borrow Book Mutation Response:', data);
 
@@ -25,6 +25,9 @@ const BooksList = ({ books, role, onDelete, onUpdate }) => {
       console.error('Error borrowing book:', error);
     }
   };
+
+  // Ensure user and borrowedBooks are defined
+  const borrowedBooks = user?.borrowedBooks || [];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -61,9 +64,14 @@ const BooksList = ({ books, role, onDelete, onUpdate }) => {
                 ) : (
                   <button
                     onClick={() => handleBorrow(book._id)}
-                    className="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors"
+                    className={`w-full py-2 px-4 rounded-lg transition-colors ${
+                      borrowedBooks.includes(book._id)
+                        ? 'bg-gray-400 text-white cursor-not-allowed'
+                        : 'bg-green-500 text-white hover:bg-green-600'
+                    }`}
+                    disabled={borrowedBooks.includes(book._id)}
                   >
-                    Borrow
+                    {borrowedBooks.includes(book._id) ? 'Borrowed' : 'Borrow'}
                   </button>
                 )}
               </div>
