@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { UPDATE_BOOK } from '../../gqloperations/mutations';
+import { useTheme } from '@mui/material/styles';
 
 const UpdateBookModal = ({ isOpen, onClose, book, refetch }) => {
+  const theme = useTheme();
   const [formData, setFormData] = useState({
     _id: '',
     title: '',
@@ -43,13 +45,33 @@ const UpdateBookModal = ({ isOpen, onClose, book, refetch }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-3xl">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">Update Book</h2>
+    <div
+      className="fixed inset-0 flex items-center justify-center"
+      style={{
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black
+        backdropFilter: 'blur(5px)', // Adds a blur effect to the background
+        zIndex: 1200, // Ensure this is lower than the modal content
+      }}
+    >
+      <div
+        className="p-4 rounded-lg shadow-lg w-full max-w-3xl"
+        style={{
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.primary,
+          zIndex: 1300, // Ensure this is higher than the background overlay
+        }}
+      >
+        <h2 className="text-xl font-bold mb-4" style={{ color: theme.palette.text.primary }}>
+          Update Book
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4">
             <div className="mb-3">
-              <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="title">
+              <label
+                className="block text-sm font-bold mb-1"
+                htmlFor="title"
+                style={{ color: theme.palette.text.secondary }}
+              >
                 Title
               </label>
               <input
@@ -58,12 +80,21 @@ const UpdateBookModal = ({ isOpen, onClose, book, refetch }) => {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-lg"
+                style={{
+                  borderColor: theme.palette.divider,
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary,
+                }}
                 required
               />
             </div>
             <div className="mb-3">
-              <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="author">
+              <label
+                className="block text-sm font-bold mb-1"
+                htmlFor="author"
+                style={{ color: theme.palette.text.secondary }}
+              >
                 Author
               </label>
               <input
@@ -72,12 +103,21 @@ const UpdateBookModal = ({ isOpen, onClose, book, refetch }) => {
                 name="author"
                 value={formData.author}
                 onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-lg"
+                style={{
+                  borderColor: theme.palette.divider,
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary,
+                }}
                 required
               />
             </div>
             <div className="mb-3">
-              <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="category">
+              <label
+                className="block text-sm font-bold mb-1"
+                htmlFor="category"
+                style={{ color: theme.palette.text.secondary }}
+              >
                 Category
               </label>
               <input
@@ -86,12 +126,21 @@ const UpdateBookModal = ({ isOpen, onClose, book, refetch }) => {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-lg"
+                style={{
+                  borderColor: theme.palette.divider,
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary,
+                }}
                 required
               />
             </div>
             <div className="mb-3">
-              <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="image">
+              <label
+                className="block text-sm font-bold mb-1"
+                htmlFor="image"
+                style={{ color: theme.palette.text.secondary }}
+              >
                 Image URL
               </label>
               <input
@@ -100,12 +149,21 @@ const UpdateBookModal = ({ isOpen, onClose, book, refetch }) => {
                 name="image"
                 value={formData.image}
                 onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-lg"
+                style={{
+                  borderColor: theme.palette.divider,
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary,
+                }}
                 required
               />
             </div>
             <div className="mb-3">
-              <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="available">
+              <label
+                className="block text-sm font-bold mb-1"
+                htmlFor="available"
+                style={{ color: theme.palette.text.secondary }}
+              >
                 Available
               </label>
               <input
@@ -114,12 +172,21 @@ const UpdateBookModal = ({ isOpen, onClose, book, refetch }) => {
                 name="available"
                 value={formData.available}
                 onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-lg"
+                style={{
+                  borderColor: theme.palette.divider,
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary,
+                }}
                 required
               />
             </div>
             <div className="mb-3">
-              <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="borrowed">
+              <label
+                className="block text-sm font-bold mb-1"
+                htmlFor="borrowed"
+                style={{ color: theme.palette.text.secondary }}
+              >
                 Borrowed
               </label>
               <input
@@ -128,7 +195,12 @@ const UpdateBookModal = ({ isOpen, onClose, book, refetch }) => {
                 name="borrowed"
                 value={formData.borrowed}
                 onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-lg"
+                style={{
+                  borderColor: theme.palette.divider,
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary,
+                }}
                 required
               />
             </div>
@@ -136,14 +208,26 @@ const UpdateBookModal = ({ isOpen, onClose, book, refetch }) => {
           <div className="flex justify-end mt-4">
             <button
               type="button"
-              className="mr-3 py-2 px-4 bg-gray-500 text-white font-bold rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="mr-3 py-2 px-4 rounded-lg"
+              style={{
+                backgroundColor: theme.palette.action.disabledBackground,
+                color: theme.palette.text.primary,
+                border: 'none',
+                cursor: 'pointer',
+              }}
               onClick={onClose}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="py-2 px-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="py-2 px-4 rounded-lg"
+              style={{
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                border: 'none',
+                cursor: 'pointer',
+              }}
             >
               Update Book
             </button>

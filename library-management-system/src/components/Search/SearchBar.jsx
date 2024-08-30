@@ -1,23 +1,44 @@
-// components/SearchComponent.js
 import React from 'react';
+import { useTheme } from '@mui/material/styles';
+import { IconButton, InputBase, Paper } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 function SearchBar({ searchText, setSearchText, onSearch }) {
+  const theme = useTheme();
+
   return (
-    <div className="mb-4">
-      <input
-        type="text"
+    <Paper
+      component="div"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        padding: '2px 4px',
+        borderRadius: theme.shape.borderRadius,
+        boxShadow: theme.shadows[1],
+        backgroundColor: theme.palette.background.paper,
+      }}
+      className="mb-4"
+    >
+      <InputBase
         placeholder="Search students by name..."
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
-        className="border rounded-lg px-4 py-2 mr-2 w-full max-w-xs"
+        style={{
+          flex: 1,
+          padding: theme.spacing(1),
+        }}
+        inputProps={{ 'aria-label': 'search students' }}
       />
-      <button
+      <IconButton
         onClick={onSearch}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 mt-2"
+        style={{
+          color: theme.palette.primary.main,
+        }}
+        aria-label="search"
       >
-        Search
-      </button>
-    </div>
+        <SearchIcon />
+      </IconButton>
+    </Paper>
   );
 }
 

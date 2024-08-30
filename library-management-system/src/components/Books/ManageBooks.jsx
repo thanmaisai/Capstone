@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { Box, Typography, Button, CircularProgress, Alert, useTheme } from '@mui/material';
+import { Box, Typography, Button, CircularProgress, Alert, useTheme, Divider } from '@mui/material';
 import AddBookModal from '../Admins/AddBookForm';
 import UpdateBookModal from '../Users/UpdateBookForm';
 import BooksList from '../Books/BooksList';
@@ -68,14 +68,31 @@ const ManageBooks = () => {
       <Typography variant="h4" component="h1" gutterBottom>
         Manage Books
       </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setModalOpen(true)}
-        sx={{ mb: 2 }}
-      >
-        Add New Book
-      </Button>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setModalOpen(true)}
+          sx={{
+            borderRadius: 2,
+            padding: '10px 20px',
+            fontWeight: 'bold',
+            textTransform: 'none',
+            boxShadow: 3,
+            '&:hover': {
+              boxShadow: 6,
+            }
+          }}
+        >
+          Add New Book
+        </Button>
+        <SearchBar
+          searchText={searchText}
+          setSearchText={setSearchText}
+          onSearch={() => {}}
+          sx={{ width: '300px' }}
+        />
+      </Box>
       <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onBookAdded={handleBookAdded} />
       <UpdateBookModal
         isOpen={isUpdateModalOpen}
@@ -83,13 +100,15 @@ const ManageBooks = () => {
         book={selectedBook}
         refetch={refetch}
       />
-      <SearchBar
-        searchText={searchText}
-        setSearchText={setSearchText}
-        onSearch={() => {}}
-        sx={{ mb: 4 }}
-      />
-      <Box sx={{ mt: 2 }}>
+      <Divider sx={{ my: 4 }} />
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: 2,
+          p: 3,
+          boxShadow: 3,
+        }}
+      >
         <BooksList
           books={filteredBooks}
           onDelete={handleDelete}
