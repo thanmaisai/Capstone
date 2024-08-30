@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { LOGIN_USER } from '../../gqloperations/mutations';
 import { useUser } from '../UserContext';
 import { TextField, Button, Typography, Box, CircularProgress, Alert, Grid } from '@mui/material';
-import { motion } from 'framer-motion';
+import { useTheme } from '@mui/material/styles';
 
 export default function Login() {
     const navigate = useNavigate();
+    const theme = useTheme();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -58,18 +59,15 @@ export default function Login() {
     return (
         <Box
             component="main"
-            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: theme.palette.background.default }}
         >
-            <motion.div
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                style={{
+            <Box
+                sx={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: '#fff',
+                    backgroundColor: theme.palette.background.paper,
                     padding: '2rem',
                     borderRadius: '8px',
                     boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
@@ -130,7 +128,7 @@ export default function Login() {
                         </Grid>
                     </Grid>
                 </Box>
-            </motion.div>
+            </Box>
         </Box>
     );
 }

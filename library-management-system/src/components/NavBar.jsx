@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from '../components/UserContext';
+import ToggleButton from "@mui/material/ToggleButton";
+import { useTheme } from '../ThemeContext';
 
 export default function NavBar() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const { user, logout } = useUser();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -102,6 +105,13 @@ export default function NavBar() {
             </>
           )}
         </ul>
+        <ToggleButton
+          value={theme}
+          selected={theme === 'dark'}
+          onChange={toggleTheme}
+        >
+          {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+        </ToggleButton>
       </div>
       {showPopup && (
         <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">

@@ -1,5 +1,3 @@
-// main.jsx
-
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { StrictMode } from 'react';
@@ -8,6 +6,8 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { UserProvider } from '../src/components/UserContext';
+import { ThemeProvider } from '@mui/material/styles';
+import { lightTheme, darkTheme } from './theme';
 
 // Setting up Apollo Client
 const client = new ApolloClient({
@@ -21,7 +21,9 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <ApolloProvider client={client}>
         <UserProvider>
-          <App />
+          <ThemeProvider theme={darkTheme}>
+            <App />
+          </ThemeProvider>
         </UserProvider>
       </ApolloProvider>
     </BrowserRouter>
