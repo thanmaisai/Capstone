@@ -106,3 +106,15 @@ export const UPDATE_BOOK = gql`
     }
   }
 `;
+
+export const BORROW_BOOK = gql`
+  mutation BorrowBook($_id: ID!) {
+    borrowBook(_id: $_id) {
+      _id
+      title
+      available
+      borrowed
+      isBorrowed
+    }
+  }
+`;

@@ -5,16 +5,12 @@ import { useUser } from '../components/UserContext';
 export default function NavBar() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
-  const { user, setUser } = useUser();
+  const { user, logout } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      if (user.role === "admin") {
-        setPopupMessage("Logged in as Admin");
-      } else if (user.role === "user") {
-        setPopupMessage("Logged in as User");
-      }
+    if (user && user.role) {
+      setPopupMessage(`Logged in as ${user.role.charAt(0).toUpperCase() + user.role.slice(1)}`);
       setShowPopup(true);
       const timer = setTimeout(() => {
         setShowPopup(false);
@@ -25,9 +21,7 @@ export default function NavBar() {
   }, [user]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    setUser(null);
+    logout();
     navigate("/login");
   };
 
@@ -38,7 +32,7 @@ export default function NavBar() {
         <ul className="flex space-x-4">
           {user ? (
             <>
-              {user.role === "admin" ? (
+              {user.role === "admin" && (
                 <>
                   <li>
                     <Link
@@ -57,22 +51,27 @@ export default function NavBar() {
                     </Link>
                   </li>
                 </>
-              ) : user.role === "user" ? (
-                <li>
-                  <Link
-                    to="/user-dashboard"
-                    className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    User Dashboard
-                  </Link>
-                  <Link
-                    to="/all-books"
-                    className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    All Books
-                  </Link>
-                </li>
-              ) : null}
+              )}
+              {user.role === "user" && (
+                <>
+                  <li>
+                    <Link
+                      to="/user-dashboard"
+                      className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      User Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/all-books"
+                      className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      All Books
+                    </Link>
+                  </li>
+                </>
+              )}
               <li>
                 <button
                   className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"

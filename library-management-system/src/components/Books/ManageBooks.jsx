@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-
 import AddBookModal from '../Admins/AddBookForm';
 import UpdateBookModal from '../Users/UpdateBookForm';
 import BooksList from '../Books/BooksList';
 import SearchBar from '../Search/SearchBar';
-
-import { GET_BOOKS, DELETE_BOOK } from '../../gqloperations/mutations';
+import { GET_BOOKS, DELETE_BOOK, BORROW_BOOK } from '../../gqloperations/mutations';
 
 const ManageBooks = () => {
   const { data, loading, error, refetch } = useQuery(GET_BOOKS);
   const [deleteBook] = useMutation(DELETE_BOOK, {
     onCompleted: () => refetch(),
     onError: (error) => console.error("Error deleting book:", error),
+  });
+  const [borrowBook] = useMutation(BORROW_BOOK, {
+    refetchQueries: [{ query: GET_BOOKS }],
   });
 
   const [isModalOpen, setModalOpen] = useState(false);
@@ -33,10 +34,22 @@ const ManageBooks = () => {
     setUpdateModalOpen(true);
   };
 
+  const handleBorrow = async (bookId) => {
+    try {
+      await borrowBook({ variables: { _id: bookId } });
+    } catch (error) {
+      console.error("Error borrowing book:", error);
+    }
+  };
+
   const filteredBooks = data?.books.filter(book =>
     book.title.toLowerCase().includes(searchText.toLowerCase()) ||
     book.category.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  const handleBookAdded = () => {
+    refetch(); // Refetch books after adding a new book
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading books: {error.message}</p>;
@@ -50,8 +63,13 @@ const ManageBooks = () => {
       >
         Add New Book
       </button>
-      <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
-      <UpdateBookModal isOpen={isUpdateModalOpen} onClose={() => setUpdateModalOpen(false)} book={selectedBook} />
+      <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onBookAdded={handleBookAdded} />
+      <UpdateBookModal
+        isOpen={isUpdateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        book={selectedBook}
+        refetch={refetch} // Pass refetch function
+      />
       <SearchBar
         searchText={searchText}
         setSearchText={setSearchText}
@@ -63,6 +81,7 @@ const ManageBooks = () => {
           onDelete={handleDelete}
           onUpdate={handleUpdate}
           role="admin"
+          onBorrow={handleBorrow}
         />
       </div>
     </div>

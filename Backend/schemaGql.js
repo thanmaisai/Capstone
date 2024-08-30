@@ -17,9 +17,9 @@ const typeDefs = gql`
      role: String!
  }
 
- type Token{
-    token:String
-    role:String
+ type Token {
+    token: String
+    role: String
  }
 
  type Book {
@@ -30,6 +30,7 @@ const typeDefs = gql`
     image: String!
     available: Int!
     borrowed: Int!
+    isBorrowed: Boolean!  # New field to track borrowing status
  }
 
  type Mutation {
@@ -38,6 +39,7 @@ const typeDefs = gql`
      addBook(bookInput: BookInput!): Book
      updateBook(_id: ID!, bookInput: BookInput!): Book
      deleteBook(_id: ID!): Book
+     borrowBook(_id: ID!): Book  # New mutation for borrowing a book
  }
 
  input UserInput {
