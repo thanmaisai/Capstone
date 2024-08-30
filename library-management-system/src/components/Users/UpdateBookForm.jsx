@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { UPDATE_BOOK } from '../../gqloperations/mutations';
 
-const UpdateBookModal = ({ isOpen, onClose, book }) => {
+const UpdateBookModal = ({ isOpen, onClose, book, refetch }) => {
   const [formData, setFormData] = useState({
     _id: '',
     title: '',
@@ -22,7 +22,7 @@ const UpdateBookModal = ({ isOpen, onClose, book }) => {
   const [updateBook] = useMutation(UPDATE_BOOK, {
     onCompleted: () => {
       onClose();
-      refetch(); // Refetch the books after updating (if refetch is defined in your context)
+      if (refetch) refetch(); // Refetch the books after updating
     },
     onError: (error) => console.error("Error updating book:", error),
   });

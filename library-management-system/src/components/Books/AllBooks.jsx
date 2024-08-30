@@ -1,11 +1,15 @@
+// components/Books/AllBooks.jsx
 import React, { useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { GET_BOOKS } from '../../gqloperations/mutations';
-import BooksList from '../Books/BooksList';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_BOOKS, BORROW_BOOK } from '../../gqloperations/mutations';
+import BooksList from './BooksList';
 import SearchBar from '../Search/SearchBar';
 
 const AllBooks = () => {
     const { loading, error, data } = useQuery(GET_BOOKS);
+    const [borrowBook] = useMutation(BORROW_BOOK, {
+        refetchQueries: [{ query: GET_BOOKS }],
+    });
     const [searchText, setSearchText] = useState('');
     const role = localStorage.getItem("role");
 
@@ -22,6 +26,14 @@ const AllBooks = () => {
         book.category.toLowerCase().includes(searchText.toLowerCase())
     );
 
+    const handleBorrow = async (bookId) => {
+        try {
+            await borrowBook({ variables: { _id: bookId } });
+        } catch (error) {
+            console.error("Error borrowing book:", error);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-100 p-8">
             <h1 className="text-3xl font-bold text-center">All Books</h1>
@@ -32,7 +44,7 @@ const AllBooks = () => {
                     onSearch={() => {}}
                 />
             </div>
-            <BooksList books={filteredBooks} />
+            <BooksList books={filteredBooks} onBorrow={handleBorrow} />
         </div>
     );
 };
