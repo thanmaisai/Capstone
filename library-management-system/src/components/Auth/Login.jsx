@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LOGIN_USER } from '../../gqloperations/mutations';
 import { useUser } from '../UserContext';
+import { Container, TextField, Button, Typography, Box, CircularProgress, Alert, Grid } from '@mui/material';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -10,7 +11,7 @@ export default function Login() {
         email: '',
         password: '',
     });
-    const { setUser } = useUser(); // Destructure setUser from useUser
+    const { setUser } = useUser();
     const [signinUser, { data, loading, error }] = useMutation(LOGIN_USER);
 
     const handleChange = (e) => {
@@ -32,14 +33,10 @@ export default function Login() {
             if (result.data) {
                 const { token, role } = result.data.signinUser;
                 localStorage.setItem("token", token);
-                localStorage.setItem("role",role);
+                localStorage.setItem("role", role);
 
-                // Set the user role in the context
                 setUser({ role });
 
-                console.log("User role: " + role);
-
-                // Redirect based on role
                 if (role === 'admin') {
                     navigate('/admin-dashboard', { state: { role } });
                 } else {
@@ -51,50 +48,82 @@ export default function Login() {
         }
     };
 
-    if (loading) return <h1 className="text-center text-gray-500">Loading...</h1>;
+    if (loading) return (
+        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+            <CircularProgress />
+        </Box>
+    );
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-                {error && <div className='text-red-600 mb-4'>{error.message}</div>}
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
-                            Email
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            placeholder="Email"
-                            name="email"
-                            onChange={handleChange}
-                            required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <div className="mb-6">
-                        <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">
-                            Password
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            placeholder="Password"
-                            name="password"
-                            onChange={handleChange}
-                            required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        Login
-                    </button>
-                </form>
-            </div>
-        </div>
+        <Container component="main" maxWidth="xs" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bgcolor: 'background.paper',
+                    p: 4,
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    width: '100%',
+                    maxWidth: 400
+                }}
+            >
+                <Typography variant="h4" component="h1" gutterBottom>
+                    Login
+                </Typography>
+                {error && <Alert severity="error" sx={{ mb: 2 }}>{error.message}</Alert>}
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit}
+                    noValidate
+                    sx={{
+                        width: '100%',
+                        mt: 2
+                    }}
+                >
+                    <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                            <TextField
+                                id="email"
+                                label="Email"
+                                type="email"
+                                name="email"
+                                variant="outlined"
+                                margin="normal"
+                                fullWidth
+                                required
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                id="password"
+                                label="Password"
+                                type="password"
+                                name="password"
+                                variant="outlined"
+                                margin="normal"
+                                fullWidth
+                                required
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                sx={{ mt: 2 }}
+                            >
+                                Login
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Box>
+        </Container>
     );
 }
