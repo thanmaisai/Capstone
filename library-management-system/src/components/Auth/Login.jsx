@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LOGIN_USER } from '../../gqloperations/mutations';
 import { useUser } from '../UserContext';
-import { Container, TextField, Button, Typography, Box, CircularProgress, Alert, Grid } from '@mui/material';
+import { TextField, Button, Typography, Box, CircularProgress, Alert, Grid } from '@mui/material';
+import { motion } from 'framer-motion';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -55,17 +56,23 @@ export default function Login() {
     );
 
     return (
-        <Container component="main" maxWidth="xs" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <Box
-                sx={{
+        <Box
+            component="main"
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+        >
+            <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    bgcolor: 'background.paper',
-                    p: 4,
-                    borderRadius: 2,
-                    boxShadow: 3,
+                    backgroundColor: '#fff',
+                    padding: '2rem',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
                     width: '100%',
                     maxWidth: 400
                 }}
@@ -123,7 +130,7 @@ export default function Login() {
                         </Grid>
                     </Grid>
                 </Box>
-            </Box>
-        </Container>
+            </motion.div>
+        </Box>
     );
 }
