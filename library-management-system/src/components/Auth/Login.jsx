@@ -3,58 +3,48 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LOGIN_USER } from '../../gqloperations/mutations';
 import { useUser } from '../UserContext';
-import { TextField, Button, Typography, Box, CircularProgress, Alert, Grid } from '@mui/material';
+import { TextField, Button, Typography, Box, CircularProgress, Alert, Grid, InputAdornment } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import EmailIcon from '@mui/icons-material/Email';
+import LockIcon from '@mui/icons-material/Lock';
 
 export default function Login() {
     const navigate = useNavigate();
     const theme = useTheme();
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
+    const [formData, setFormData] = useState({ email: '', password: '' });
     const { setUser } = useUser();
-    const [signinUser, { data, loading, error }] = useMutation(LOGIN_USER);
+    const [signinUser, { loading, error }] = useMutation(LOGIN_USER);
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        const { name, value } = e.target;
+        setFormData(prevState => ({ ...prevState, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const result = await signinUser({
-                variables: {
-                    userSignin: formData
-                }
-            });
+            const { data } = await signinUser({ variables: { userSignin: formData } });
 
-            if (result.data) {
-                const { token, role } = result.data.signinUser;
+            if (data) {
+                const { token, role } = data.signinUser;
                 localStorage.setItem("token", token);
                 localStorage.setItem("role", role);
-
                 setUser({ role });
 
-                if (role === 'admin') {
-                    navigate('/admin-dashboard', { state: { role } });
-                } else {
-                    navigate('/user-dashboard', { state: { role } });
-                }
+                navigate(role === 'admin' ? '/admin-dashboard' : '/user-dashboard', { state: { role } });
             }
         } catch (error) {
             console.error("Login error:", error);
         }
     };
 
-    if (loading) return (
-        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-            <CircularProgress />
-        </Box>
-    );
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <Box
@@ -69,24 +59,35 @@ export default function Login() {
                     justifyContent: 'center',
                     backgroundColor: theme.palette.background.paper,
                     padding: '2rem',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                     width: '100%',
                     maxWidth: 400
                 }}
             >
-                <Typography variant="h4" component="h1" gutterBottom>
+                <Typography
+                    variant="h4"
+                    component="h1"
+                    gutterBottom
+                    sx={{
+                        color: theme.palette.text.primary,
+                        fontWeight: 'bold',
+                        mb: 2,
+                        textAlign: 'center'
+                    }}
+                >
                     Login
                 </Typography>
-                {error && <Alert severity="error" sx={{ mb: 2 }}>{error.message}</Alert>}
+                {error && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        {error.message}
+                    </Alert>
+                )}
                 <Box
                     component="form"
                     onSubmit={handleSubmit}
                     noValidate
-                    sx={{
-                        width: '100%',
-                        mt: 2
-                    }}
+                    sx={{ width: '100%', mt: 2 }}
                 >
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
@@ -99,7 +100,15 @@ export default function Login() {
                                 margin="normal"
                                 fullWidth
                                 required
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <EmailIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
                                 onChange={handleChange}
+                                sx={{ borderRadius: '8px' }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -112,7 +121,15 @@ export default function Login() {
                                 margin="normal"
                                 fullWidth
                                 required
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <LockIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
                                 onChange={handleChange}
+                                sx={{ borderRadius: '8px' }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -121,7 +138,7 @@ export default function Login() {
                                 variant="contained"
                                 color="primary"
                                 fullWidth
-                                sx={{ mt: 2 }}
+                                sx={{ mt: 2, borderRadius: '8px' }}
                             >
                                 Login
                             </Button>
