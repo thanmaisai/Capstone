@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_BOOKS } from '../../gqloperations/mutations';
-import { Bar, Pie } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
+import { useTheme } from '@mui/material/styles';
+import { Box, Typography, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress } from '@mui/material';
 
 const AdminDashboard = () => {
+  const theme = useTheme();
   const [role, setRole] = useState(null);
   const { loading, error, data } = useQuery(GET_BOOKS);
 
@@ -13,8 +16,12 @@ const AdminDashboard = () => {
     setRole(storedRole);
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (loading) return (
+    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <CircularProgress />
+    </Box>
+  );
+  if (error) return <Typography color="error">Error: {error.message}</Typography>;
 
   const books = data.books;
 
@@ -42,8 +49,8 @@ const AdminDashboard = () => {
       {
         label: 'Books Available',
         data: booksPerCategory,
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: theme.palette.primary.main,
+        borderColor: theme.palette.primary.dark,
         borderWidth: 1,
       },
     ],
@@ -55,72 +62,93 @@ const AdminDashboard = () => {
       {
         label: 'Books Borrowed',
         data: borrowedPerCategory,
-        backgroundColor: 'rgba(255, 99, 132, 0.6)',
-        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: theme.palette.secondary.main,
+        borderColor: theme.palette.secondary.dark,
         borderWidth: 1,
       },
     ],
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-4xl font-bold text-center mb-8">Admin Dashboard</h1>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        padding: '2rem',
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary
+      }}
+    >
+      <Typography variant="h3" component="h1" gutterBottom align="center">
+        Admin Dashboard
+      </Typography>
 
       {/* Overall Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <h2 className="text-xl font-semibold">Total Books</h2>
-          <p className="text-3xl font-bold text-blue-600">{totalBooks}</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <h2 className="text-xl font-semibold">Books Available</h2>
-          <p className="text-3xl font-bold text-green-600">{totalAvailable}</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <h2 className="text-xl font-semibold">Books Borrowed</h2>
-          <p className="text-3xl font-bold text-red-600">{totalBorrowed}</p>
-        </div>
-      </div>
+      <Grid container spacing={4} mb={4}>
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ padding: '2rem', borderRadius: '8px', boxShadow: theme.shadows[3], textAlign: 'center' }}>
+            <Typography variant="h6" gutterBottom>Total Books</Typography>
+            <Typography variant="h4" color="primary">{totalBooks}</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ padding: '2rem', borderRadius: '8px', boxShadow: theme.shadows[3], textAlign: 'center' }}>
+            <Typography variant="h6" gutterBottom>Books Available</Typography>
+            <Typography variant="h4" color="success.main">{totalAvailable}</Typography>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ padding: '2rem', borderRadius: '8px', boxShadow: theme.shadows[3], textAlign: 'center' }}>
+            <Typography variant="h6" gutterBottom>Books Borrowed</Typography>
+            <Typography variant="h4" color="error.main">{totalBorrowed}</Typography>
+          </Paper>
+        </Grid>
+      </Grid>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold mb-4 text-center">Books Available by Category</h2>
-          <Bar data={availabilityChartData} options={{ responsive: true }} />
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold mb-4 text-center">Books Borrowed by Category</h2>
-          <Bar data={borrowedChartData} options={{ responsive: true }} />
-        </div>
-      </div>
+      <Grid container spacing={4}>
+        <Grid item xs={12} lg={6}>
+          <Paper sx={{ padding: '2rem', borderRadius: '8px', boxShadow: theme.shadows[3] }}>
+            <Typography variant="h6" gutterBottom align="center">Books Available by Category</Typography>
+            <Bar data={availabilityChartData} options={{ responsive: true, plugins: { legend: { position: 'top' } } }} />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Paper sx={{ padding: '2rem', borderRadius: '8px', boxShadow: theme.shadows[3] }}>
+            <Typography variant="h6" gutterBottom align="center">Books Borrowed by Category</Typography>
+            <Bar data={borrowedChartData} options={{ responsive: true, plugins: { legend: { position: 'top' } } }} />
+          </Paper>
+        </Grid>
+      </Grid>
 
       {/* Detailed List Section */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Books List by Category</h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full table-auto">
-            <thead>
-              <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                <th className="py-3 px-6 text-left">Title</th>
-                <th className="py-3 px-6 text-left">Category</th>
-                <th className="py-3 px-6 text-center">Available</th>
-                <th className="py-3 px-6 text-center">Borrowed</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-600 text-sm font-light">
-              {books.map((book) => (
-                <tr key={book._id} className="border-b border-gray-200 hover:bg-gray-100">
-                  <td className="py-3 px-6 text-left whitespace-nowrap">{book.title}</td>
-                  <td className="py-3 px-6 text-left">{book.category}</td>
-                  <td className="py-3 px-6 text-center">{book.available}</td>
-                  <td className="py-3 px-6 text-center">{book.borrowed}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+      <Box mt={4}>
+        <Paper sx={{ padding: '2rem', borderRadius: '8px', boxShadow: theme.shadows[3] }}>
+          <Typography variant="h6" gutterBottom align="center">Books List by Category</Typography>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Title</TableCell>
+                  <TableCell>Category</TableCell>
+                  <TableCell align="center">Available</TableCell>
+                  <TableCell align="center">Borrowed</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {books.map((book) => (
+                  <TableRow key={book._id}>
+                    <TableCell>{book.title}</TableCell>
+                    <TableCell>{book.category}</TableCell>
+                    <TableCell align="center">{book.available}</TableCell>
+                    <TableCell align="center">{book.borrowed}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Box>
+    </Box>
   );
 };
 
