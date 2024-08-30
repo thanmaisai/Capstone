@@ -1,7 +1,9 @@
-import React,{ useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUser } from '../UserContext';
 import { useQuery } from '@apollo/client';
-import { GET_BOOKS } from '../../gqloperations/mutations'; 
+import { GET_BOOKS } from '../../gqloperations/mutations';
+import { Container, Typography, Box, Card, CardMedia, CardContent, Grid, CircularProgress, Alert } from '@mui/material';
+import { motion } from 'framer-motion';
 
 const UserDashboard = () => {
     const { user } = useUser();
@@ -17,49 +19,85 @@ const UserDashboard = () => {
     }, [data, user]);
 
     if (loading) {
-        return <p className="text-center text-gray-600">Loading...</p>;
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                <CircularProgress />
+            </Box>
+        );
     }
 
     if (error) {
-        return <p className="text-center text-red-500">Error fetching books: {error.message}</p>;
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                <Alert severity="error">Error fetching books: {error.message}</Alert>
+            </Box>
+        );
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 p-8">
-            <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-                <h1 className="text-3xl font-bold text-center text-gray-800">User Dashboard</h1>
-                <p className="text-center text-gray-600 mt-2">Your role: {user?.role}</p>
+        <Container maxWidth="lg">
+            <Box my={4}>
+                <Typography variant="h3" component="h1" align="center" gutterBottom>
+                    User Dashboard
+                </Typography>
+                <Typography variant="h6" align="center" color="textSecondary" gutterBottom>
+                    Your role: {user?.role}
+                </Typography>
 
-                <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                    <h2 className="text-2xl font-semibold text-gray-800">Summary</h2>
-                    <p className="mt-2 text-gray-600">Total books borrowed: <span className="font-bold text-blue-600">{borrowedBooks.length}</span></p>
-                </div>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+                    <Box my={4} p={2} bgcolor="background.paper" borderRadius={2} boxShadow={3}>
+                        <Typography variant="h4" component="h2" gutterBottom>
+                            Summary
+                        </Typography>
+                        <Typography variant="body1" color="textSecondary">
+                            Total books borrowed: <Typography component="span" fontWeight="bold" color="primary">{borrowedBooks.length}</Typography>
+                        </Typography>
+                    </Box>
+                </motion.div>
 
-                <div className="mt-8">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Borrowed Books</h2>
-                    {borrowedBooks.length > 0 ? (
-                        <ul className="space-y-4">
-                            {borrowedBooks.map(book => (
-                                <li key={book._id} className="flex items-center space-x-4 p-4 bg-white rounded-lg shadow-md">
-                                    <img 
-                                        src={book.image} 
-                                        alt={book.title} 
-                                        className="w-24 h-36 object-cover rounded-md"
-                                    />
-                                    <div className="flex-1">
-                                        <h3 className="text-xl font-medium text-gray-800">{book.title}</h3>
-                                        <p className="text-gray-600">Author: {book.author}</p>
-                                        <p className="text-gray-600">Category: {book.category}</p>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p className="text-center text-gray-600">No borrowed books</p>
-                    )}
-                </div>
-            </div>
-        </div>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+                    <Box my={4}>
+                        <Typography variant="h4" component="h2" gutterBottom>
+                            Borrowed Books
+                        </Typography>
+                        <Grid container spacing={3}>
+                            {borrowedBooks.length > 0 ? (
+                                borrowedBooks.map(book => (
+                                    <Grid item xs={12} sm={6} md={4} key={book._id}>
+                                        <Card>
+                                            <CardMedia
+                                                component="img"
+                                                alt={book.title}
+                                                height="300"
+                                                image={book.image}
+                                                sx={{ objectFit: 'cover' }}
+                                            />
+                                            <CardContent>
+                                                <Typography variant="h6" component="h3">
+                                                    {book.title}
+                                                </Typography>
+                                                <Typography color="textSecondary">
+                                                    Author: {book.author}
+                                                </Typography>
+                                                <Typography color="textSecondary">
+                                                    Category: {book.category}
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                ))
+                            ) : (
+                                <Grid item xs={12}>
+                                    <Typography align="center" color="textSecondary">
+                                        No borrowed books
+                                    </Typography>
+                                </Grid>
+                            )}
+                        </Grid>
+                    </Box>
+                </motion.div>
+            </Box>
+        </Container>
     );
 };
 
