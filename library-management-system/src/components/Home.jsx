@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography, Container, Grid, Paper } from '@mui/material';
+import { motion } from 'framer-motion';
 import '../App.css'; 
 
 function Home() {
@@ -14,66 +15,38 @@ function Home() {
       </Typography>
 
       <Grid container spacing={4} justifyContent="center">
-        <Grid item xs={12} sm={6} md={4}>
-          <Paper className="info-card" sx={{ padding: 2, textAlign: 'center', height: '100%' }}>
-            <Typography variant="h5" component="h2" className="card-title">
-              Manage Books
-            </Typography>
-            <Typography variant="body1" component="p" className="card-description">
-              Add, edit, or remove books from your collection effortlessly.
-            </Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Paper className="info-card" sx={{ padding: 2, textAlign: 'center', height: '100%' }}>
-            <Typography variant="h5" component="h2" className="card-title">
-              Track Members
-            </Typography>
-            <Typography variant="body1" component="p" className="card-description">
-              Keep track of library members, their activities, and more.
-            </Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Paper className="info-card" sx={{ padding: 2, textAlign: 'center', height: '100%' }}>
-            <Typography variant="h5" component="h2" className="card-title">
-              Borrow Books
-            </Typography>
-            <Typography variant="body1" component="p" className="card-description">
-              Easily borrow books from the library and keep track of due dates.
-            </Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Paper className="info-card" sx={{ padding: 2, textAlign: 'center', height: '100%' }}>
-            <Typography variant="h5" component="h2" className="card-title">
-              Check Available Books
-            </Typography>
-            <Typography variant="body1" component="p" className="card-description">
-              View which books are currently available in the library.
-            </Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Paper className="info-card" sx={{ padding: 2, textAlign: 'center', height: '100%' }}>
-            <Typography variant="h5" component="h2" className="card-title">
-              Admin Dashboard
-            </Typography>
-            <Typography variant="body1" component="p" className="card-description">
-              See and manage all the books and library settings from one place.
-            </Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Paper className="info-card" sx={{ padding: 2, textAlign: 'center', height: '100%' }}>
-            <Typography variant="h5" component="h2" className="card-title">
-              Chatbot
-            </Typography>
-            <Typography variant="body1" component="p" className="card-description">
-              Get instant help and answers to your library-related questions through our chatbot.
-            </Typography>
-          </Paper>
-        </Grid>
+        {[ 
+          { title: "Manage Books", description: "Add, edit, or remove books from your collection effortlessly." },
+          { title: "Track Members", description: "Keep track of library members, their activities, and more." },
+          { title: "Borrow Books", description: "Easily borrow books from the library and keep track of due dates." },
+          { title: "Check Available Books", description: "View which books are currently available in the library." },
+          { title: "Admin Dashboard", description: "See and manage all the books and library settings from one place." },
+          { title: "Chatbot", description: "Get instant help and answers to your library-related questions through our chatbot." }
+        ].map((card, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              <Paper className="info-card" sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                justifyContent: 'space-between', 
+                padding: 3, 
+                height: 200, 
+                textAlign: 'center' 
+              }}>
+                <Typography variant="h5" component="h2" className="card-title" sx={{ marginBottom: 2 }}>
+                  {card.title}
+                </Typography>
+                <Typography variant="body1" component="p" className="card-description">
+                  {card.description}
+                </Typography>
+              </Paper>
+            </motion.div>
+          </Grid>
+        ))}
       </Grid>
     </Container>
   );
