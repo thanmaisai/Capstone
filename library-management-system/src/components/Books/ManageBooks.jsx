@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
+import { Box, Typography, Button, CircularProgress, Alert, useTheme } from '@mui/material';
 import AddBookModal from '../Admins/AddBookForm';
 import UpdateBookModal from '../Users/UpdateBookForm';
 import BooksList from '../Books/BooksList';
@@ -7,6 +8,7 @@ import SearchBar from '../Search/SearchBar';
 import { GET_BOOKS, DELETE_BOOK, BORROW_BOOK } from '../../gqloperations/mutations';
 
 const ManageBooks = () => {
+  const theme = useTheme(); // Get the current theme
   const { data, loading, error, refetch } = useQuery(GET_BOOKS);
   const [deleteBook] = useMutation(DELETE_BOOK, {
     onCompleted: () => refetch(),
@@ -51,31 +53,43 @@ const ManageBooks = () => {
     refetch(); // Refetch books after adding a new book
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading books: {error.message}</p>;
+  if (loading) return <CircularProgress />;
+  if (error) return <Alert severity="error">{error.message}</Alert>;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Manage Books</h1>
-      <button
+    <Box
+      sx={{
+        p: 4,
+        minHeight: '100vh',
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
+      }}
+    >
+      <Typography variant="h4" component="h1" gutterBottom>
+        Manage Books
+      </Typography>
+      <Button
+        variant="contained"
+        color="primary"
         onClick={() => setModalOpen(true)}
-        className="mb-4 py-2 px-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600"
+        sx={{ mb: 2 }}
       >
         Add New Book
-      </button>
+      </Button>
       <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onBookAdded={handleBookAdded} />
       <UpdateBookModal
         isOpen={isUpdateModalOpen}
         onClose={() => setUpdateModalOpen(false)}
         book={selectedBook}
-        refetch={refetch} // Pass refetch function
+        refetch={refetch}
       />
       <SearchBar
         searchText={searchText}
         setSearchText={setSearchText}
         onSearch={() => {}}
+        sx={{ mb: 4 }}
       />
-      <div className="mt-8">
+      <Box sx={{ mt: 2 }}>
         <BooksList
           books={filteredBooks}
           onDelete={handleDelete}
@@ -83,8 +97,8 @@ const ManageBooks = () => {
           role="admin"
           onBorrow={handleBorrow}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
