@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_BOOKS, BORROW_BOOK } from '../../gqloperations/mutations';
-import { Container, Typography, TextField, Button, Paper, Grid } from '@mui/material';
+import { Container, Typography, TextField, Button, Paper, Grid, useTheme } from '@mui/material';
 import { motion } from 'framer-motion';
 import BooksList from './BooksList';
 
@@ -12,6 +12,7 @@ const AllBooks = () => {
     });
     const [searchText, setSearchText] = useState('');
     const role = localStorage.getItem("role");
+    const theme = useTheme();
 
     if (role !== 'user') {
         return (
@@ -55,12 +56,17 @@ const AllBooks = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="min-h-screen bg-gray-100 p-8"
+                style={{ 
+                    minHeight: '100vh',
+                    backgroundColor: theme.palette.background.default,
+                    color: theme.palette.text.primary,
+                    padding: theme.spacing(4)
+                }}
             >
                 <Typography variant="h3" align="center" gutterBottom>
                     All Books
                 </Typography>
-                <Paper elevation={3} style={{ padding: 16, marginBottom: 16 }}>
+                <Paper elevation={3} style={{ padding: theme.spacing(2), marginBottom: theme.spacing(2) }}>
                     <TextField
                         fullWidth
                         label="Search"
