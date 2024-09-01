@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { Box, Typography, Button, CircularProgress, Alert, useTheme, Divider } from '@mui/material';
+import { Box, Button, CircularProgress, Alert, useTheme, Typography } from '@mui/material';
 import AddBookModal from '../Admins/AddBookForm';
 import UpdateBookModal from '../Users/UpdateBookForm';
 import BooksList from '../Books/BooksList';
@@ -8,7 +8,7 @@ import SearchBar from '../Search/SearchBar';
 import { GET_BOOKS, DELETE_BOOK, BORROW_BOOK } from '../../gqloperations/mutations';
 
 const ManageBooks = () => {
-  const theme = useTheme(); // Get the current theme
+  const theme = useTheme();
   const { data, loading, error, refetch } = useQuery(GET_BOOKS);
   const [deleteBook] = useMutation(DELETE_BOOK, {
     onCompleted: () => refetch(),
@@ -50,7 +50,7 @@ const ManageBooks = () => {
   );
 
   const handleBookAdded = () => {
-    refetch(); // Refetch books after adding a new book
+    refetch();
   };
 
   if (loading) return <CircularProgress />;
@@ -59,39 +59,79 @@ const ManageBooks = () => {
   return (
     <Box
       sx={{
-        p: 4,
-        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        pt: 3,
         backgroundColor: theme.palette.background.default,
         color: theme.palette.text.primary,
+        minHeight: '100vh', // Ensure full height
+        p: 2,
       }}
     >
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" gutterBottom>
         Manage Books
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setModalOpen(true)}
-          sx={{
-            borderRadius: 2,
-            padding: '10px 20px',
-            fontWeight: 'bold',
-            textTransform: 'none',
-            boxShadow: 3,
-            '&:hover': {
-              boxShadow: 6,
-            }
-          }}
-        >
-          Add New Book
-        </Button>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: 1200,
+          mb: 2,
+        }}
+      >
         <SearchBar
           searchText={searchText}
           setSearchText={setSearchText}
           onSearch={() => {}}
-          sx={{ width: '300px' }}
+          sx={{ width: '100%', maxWidth: 600, mb: 2 }}
         />
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 1,
+            width: '100%',
+            maxWidth: 600,
+          }}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setModalOpen(true)}
+            sx={{
+              flex: 1,
+              borderRadius: 4,
+              padding: '8px 16px',
+              fontWeight: 'bold',
+              textTransform: 'none',
+              boxShadow: 2,
+              '&:hover': {
+                boxShadow: 4,
+              },
+            }}
+          >
+            Add New Book
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setSearchText('')}
+            sx={{
+              flex: 1,
+              borderRadius: 4,
+              padding: '8px 16px',
+              textTransform: 'none',
+              boxShadow: 2,
+              '&:hover': {
+                boxShadow: 4,
+              },
+            }}
+          >
+            Clear Search
+          </Button>
+        </Box>
       </Box>
       <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onBookAdded={handleBookAdded} />
       <UpdateBookModal
@@ -100,13 +140,15 @@ const ManageBooks = () => {
         book={selectedBook}
         refetch={refetch}
       />
-      <Divider sx={{ my: 4 }} />
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
-          borderRadius: 2,
-          p: 3,
-          boxShadow: 3,
+          borderRadius: 1,
+          p: 2,
+          boxShadow: 2,
+          width: '100%',
+          maxWidth: 1500,
+          mt: 2,
         }}
       >
         <BooksList
