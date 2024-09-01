@@ -1,4 +1,3 @@
-/* The above code is a React component for a login form. Here is a summary of what the code is doing: */
 import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +8,7 @@ import { useTheme } from '@mui/material/styles';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -55,8 +55,11 @@ export default function Login() {
         >
             <Grid container spacing={2} sx={{ maxWidth: 'md', mx: 'auto' }}>
                 <Grid item xs={12} md={7} sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center' }}>
-                    <Box
-                        sx={{
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                        style={{
                             width: '100%',
                             height: '100%',
                             backgroundImage: 'url(https://plus.unsplash.com/premium_vector-1720980470208-79f49f4d8f61?q=80&w=1800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)',
@@ -68,8 +71,11 @@ export default function Login() {
                     />
                 </Grid>
                 <Grid item xs={12} md={5} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Box
-                        sx={{
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        style={{
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
@@ -168,7 +174,7 @@ export default function Login() {
                         >
                             New to LMS? <Link to="/signup" style={{ color: theme.palette.primary.main, textDecoration: 'underline' }}>Sign up now</Link>
                         </Typography>
-                    </Box>
+                    </motion.div>
                 </Grid>
             </Grid>
         </Box>

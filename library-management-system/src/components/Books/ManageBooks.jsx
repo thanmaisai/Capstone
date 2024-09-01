@@ -1,6 +1,4 @@
-/* This code snippet is a React component called `ManageBooks` that manages a list of books. Here's a
-breakdown of what it does: */
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { Box, Button, CircularProgress, Alert, useTheme, Typography } from '@mui/material';
 import AddBookModal from '../Admins/AddBookForm';
@@ -13,7 +11,7 @@ const ManageBooks = () => {
   const theme = useTheme();
   const { data, loading, error, refetch } = useQuery(GET_BOOKS);
   const [deleteBook] = useMutation(DELETE_BOOK, {
-    onCompleted: () => refetch(),
+    onCompleted: refetch,
     onError: (error) => console.error("Error deleting book:", error),
   });
   const [borrowBook] = useMutation(BORROW_BOOK, {
@@ -25,35 +23,37 @@ const ManageBooks = () => {
   const [selectedBook, setSelectedBook] = useState(null);
   const [searchText, setSearchText] = useState('');
 
-  const handleDelete = async (bookId) => {
+  const handleDelete = useCallback(async (bookId) => {
     try {
       await deleteBook({ variables: { _id: bookId } });
     } catch (error) {
       console.error("Error deleting book:", error);
     }
-  };
+  }, [deleteBook]);
 
-  const handleUpdate = (book) => {
+  const handleUpdate = useCallback((book) => {
     setSelectedBook(book);
     setUpdateModalOpen(true);
-  };
+  }, []);
 
-  const handleBorrow = async (bookId) => {
+  const handleBorrow = useCallback(async (bookId) => {
     try {
       await borrowBook({ variables: { _id: bookId } });
     } catch (error) {
       console.error("Error borrowing book:", error);
     }
-  };
+  }, [borrowBook]);
 
-  const filteredBooks = data?.books.filter(book =>
-    book.title.toLowerCase().includes(searchText.toLowerCase()) ||
-    book.category.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredBooks = useMemo(() => {
+    return data?.books.filter(book =>
+      book.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      book.category.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }, [data, searchText]);
 
-  const handleBookAdded = () => {
+  const handleBookAdded = useCallback(() => {
     refetch();
-  };
+  }, [refetch]);
 
   if (loading) return <CircularProgress />;
   if (error) return <Alert severity="error">{error.message}</Alert>;
@@ -67,7 +67,7 @@ const ManageBooks = () => {
         pt: 3,
         backgroundColor: theme.palette.background.default,
         color: theme.palette.text.primary,
-        minHeight: '100vh', // Ensure full height
+        minHeight: '100vh',
         p: 2,
       }}
     >

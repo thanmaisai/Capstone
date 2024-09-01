@@ -1,11 +1,9 @@
-/* This code snippet is a React component called `AddBookModal` that represents a modal for adding a
-new book. Here's a breakdown of what the code is doing: */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useMutation } from '@apollo/client';
 import { ADD_BOOK_MUTATION } from '../../gqloperations/mutations';
 import { useTheme } from '@mui/material/styles';
 
-const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
+const AddBookModal = React.memo(({ isOpen, onClose, onBookAdded }) => {
   const theme = useTheme();
   const [addBook, { error }] = useMutation(ADD_BOOK_MUTATION);
   const [formData, setFormData] = useState({
@@ -17,15 +15,15 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
     borrowed: ''
   });
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
       [name]: ['available', 'borrowed'].includes(name) ? Number(value) : value,
     }));
-  };
+  }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     try {
       await addBook({
@@ -46,28 +44,47 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
     } catch (err) {
       console.error('Error adding book:', err);
     }
-  };
+  }, [addBook, formData, onClose, onBookAdded]);
 
   if (!isOpen) return null;
 
+  const modalStyle = {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backdropFilter: 'blur(5px)',
+    zIndex: 1200,
+  };
+
+  const containerStyle = {
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary,
+    zIndex: 1300,
+  };
+
+  const labelStyle = {
+    color: theme.palette.text.secondary,
+  };
+
+  const inputStyle = {
+    borderColor: theme.palette.divider,
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
+  };
+
+  const buttonStyles = {
+    cancel: {
+      backgroundColor: theme.palette.action.disabledBackground,
+      color: theme.palette.text.primary,
+    },
+    submit: {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText,
+    }
+  };
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center"
-      style={{
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        backdropFilter: 'blur(5px)',
-        zIndex: 1200,
-      }}
-    >
-      <div className="p-4 rounded-lg shadow-lg w-full max-w-3xl"
-        style={{
-          backgroundColor: theme.palette.background.default,
-          color: theme.palette.text.primary,
-          zIndex: 1300,
-        }}
-      >
-        <h2 className="text-xl font-bold mb-4"
-          style={{ color: theme.palette.text.primary }}
-        >
+    <div className="fixed inset-0 flex items-center justify-center" style={modalStyle}>
+      <div className="p-4 rounded-lg shadow-lg w-full max-w-3xl" style={containerStyle}>
+        <h2 className="text-xl font-bold mb-4" style={labelStyle}>
           Add New Book
         </h2>
         <form onSubmit={handleSubmit}>
@@ -81,11 +98,7 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
               { id: 'borrowed', label: 'Borrowed', type: 'number' }
             ].map(({ id, label, type = 'text' }) => (
               <div key={id} className="mb-3">
-                <label
-                  className="block text-sm font-bold mb-1"
-                  htmlFor={id}
-                  style={{ color: theme.palette.text.secondary }}
-                >
+                <label className="block text-sm font-bold mb-1" htmlFor={id} style={labelStyle}>
                   {label}
                 </label>
                 <input
@@ -95,11 +108,7 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
                   value={formData[id]}
                   onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded-lg"
-                  style={{
-                    borderColor: theme.palette.divider,
-                    backgroundColor: theme.palette.background.paper,
-                    color: theme.palette.text.primary,
-                  }}
+                  style={inputStyle}
                   required
                 />
               </div>
@@ -109,12 +118,7 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
             <button
               type="button"
               className="mr-3 py-2 px-4 rounded-lg"
-              style={{
-                backgroundColor: theme.palette.action.disabledBackground,
-                color: theme.palette.text.primary,
-                border: 'none',
-                cursor: 'pointer',
-              }}
+              style={buttonStyles.cancel}
               onClick={onClose}
             >
               Cancel
@@ -122,12 +126,7 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
             <button
               type="submit"
               className="py-2 px-4 rounded-lg"
-              style={{
-                backgroundColor: theme.palette.primary.main,
-                color: theme.palette.primary.contrastText,
-                border: 'none',
-                cursor: 'pointer',
-              }}
+              style={buttonStyles.submit}
             >
               Add Book
             </button>
@@ -137,6 +136,6 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
       </div>
     </div>
   );
-};
+});
 
 export default AddBookModal;

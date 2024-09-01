@@ -1,9 +1,4 @@
-/* The above code is a React component called `AllBooks`. It fetches a list of books using Apollo
-Client's `useQuery` hook and displays them in a list. It also allows the user to search for books by
-title, author, or genre. If the user is not authorized (role is not 'user'), it displays an
-"Unauthorized access" message. */
-
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { Container, Typography, Grid, useTheme, CircularProgress, Box } from '@mui/material';
 import { motion } from 'framer-motion';
@@ -18,8 +13,30 @@ const AllBooks = () => {
   });
   const [searchText, setSearchText] = useState('');
   const [searchField, setSearchField] = useState('title');
-  const role = localStorage.getItem("role");
+  const role = useMemo(() => localStorage.getItem("role"), []);
   const theme = useTheme();
+
+  // Memoize search filtering to avoid unnecessary recalculations
+  const filteredBooks = useMemo(() => {
+    if (!data) return [];
+    return data.books.filter(book =>
+      book[searchField].toLowerCase().includes(searchText.toLowerCase())
+    );
+  }, [data, searchField, searchText]);
+
+  // Memoize the borrow function to prevent re-creation on each render
+  const handleBorrow = useCallback(async (bookId) => {
+    try {
+      await borrowBook({ variables: { _id: bookId } });
+    } catch (error) {
+      console.error("Error borrowing book:", error);
+    }
+  }, [borrowBook]);
+
+  const handleSearch = useCallback((field, text) => {
+    setSearchField(field);
+    setSearchText(text);
+  }, []);
 
   if (role !== 'user') {
     return (
@@ -30,40 +47,6 @@ const AllBooks = () => {
       </Container>
     );
   }
-
-  if (loading) return (
-    <Container maxWidth="sm">
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <CircularProgress />
-      </Box>
-    </Container>
-  );
-
-  if (error) return (
-    <Container maxWidth="sm">
-      <Typography variant="h5" align="center" color="error">
-        Error: {error.message}
-      </Typography>
-    </Container>
-  );
-
-  // Filter books based on search text and search field
-  const filteredBooks = data?.books.filter(book =>
-    book[searchField].toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  const handleBorrow = async (bookId) => {
-    try {
-      await borrowBook({ variables: { _id: bookId } });
-    } catch (error) {
-      console.error("Error borrowing book:", error);
-    }
-  };
-
-  const handleSearch = (field, text) => {
-    setSearchField(field);
-    setSearchText(text);
-  };
 
   return (
     <Container maxWidth={false} disableGutters>
@@ -77,7 +60,10 @@ const AllBooks = () => {
           backgroundColor: theme.palette.background.default,
           color: theme.palette.text.primary,
           padding: theme.spacing(4),
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
         }}
       >
         <Typography variant="h3" align="center" gutterBottom>
@@ -93,11 +79,23 @@ const AllBooks = () => {
             />
           </Grid>
         </Grid>
-        <Grid container spacing={3} style={{ marginTop: theme.spacing(2) }}>
-          <Grid item xs={12}>
-            <BooksList books={filteredBooks} onBorrow={handleBorrow} />
+
+        {/* Display loading spinner centered but keeping the background and layout */}
+        {loading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" flexGrow={1}>
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Typography variant="h5" align="center" color="error">
+            Error: {error.message}
+          </Typography>
+        ) : (
+          <Grid container spacing={3} style={{ marginTop: theme.spacing(2) }}>
+            <Grid item xs={12}>
+              <BooksList books={filteredBooks} onBorrow={handleBorrow} />
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </motion.div>
     </Container>
   );

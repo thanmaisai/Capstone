@@ -1,6 +1,6 @@
 /* This code snippet is a React functional component called `NavBar` that represents a navigation bar
 for a web application. Here's a breakdown of what the code is doing: */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from '../components/UserContext';
 import ToggleButton from "@mui/material/ToggleButton";
@@ -14,7 +14,7 @@ import BookIcon from "@mui/icons-material/Book";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 
-export default function NavBar() {
+const NavBar = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const { user, logout } = useUser();
@@ -33,10 +33,46 @@ export default function NavBar() {
     }
   }, [user]);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     logout();
     navigate("/login");
-  };
+  }, [logout, navigate]);
+
+  const renderAdminLinks = useMemo(() => (
+    <>
+      <li>
+        <Link to="/admin-dashboard" className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+          <DashboardIcon className="mr-2" />
+          Admin Dashboard
+        </Link>
+      </li>
+      <li>
+        <Link to="/manage-books" className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+          <BookIcon className="mr-2" />
+          Manage Books
+        </Link>
+      </li>
+    </>
+  ), []);
+
+  const renderUserLinks = useMemo(() => (
+    <>
+      <li>
+        <Link to="/user-dashboard" className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+          <DashboardIcon className="mr-2" />
+          User Dashboard
+        </Link>
+      </li>
+      <li>
+        <Link to="/all-books" className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+          <BookIcon className="mr-2" />
+          All Books
+        </Link>
+      </li>
+    </>
+  ), []);
+
+  const themeButtonIcon = theme === 'light' ? <LightModeIcon /> : <DarkModeIcon />;
 
   return (
     <nav className={`shadow-md ${theme === 'light' ? 'bg-white-900 text-black' : 'bg-gray-900 text-gray-200'}`}>
@@ -55,50 +91,8 @@ export default function NavBar() {
         <ul className="flex items-center space-x-4">
           {user ? (
             <>
-              {user.role === "admin" && (
-                <>
-                  <li>
-                    <Link
-                      to="/admin-dashboard"
-                      className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium flex items-center"
-                    >
-                      <DashboardIcon className="mr-2" />
-                      Admin Dashboard
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/manage-books"
-                      className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium flex items-center"
-                    >
-                      <BookIcon className="mr-2" />
-                      Manage Books
-                    </Link>
-                  </li>
-                </>
-              )}
-              {user.role === "user" && (
-                <>
-                  <li>
-                    <Link
-                      to="/user-dashboard"
-                      className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium flex items-center"
-                    >
-                      <DashboardIcon className="mr-2" />
-                      User Dashboard
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/all-books"
-                      className="hover:bg-purple-600 px-3 py-2 rounded-md text-sm font-medium flex items-center"
-                    >
-                      <BookIcon className="mr-2" />
-                      All Books
-                    </Link>
-                  </li>
-                </>
-              )}
+              {user.role === "admin" && renderAdminLinks}
+              {user.role === "user" && renderUserLinks}
               <li>
                 <IconButton
                   className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
@@ -137,7 +131,7 @@ export default function NavBar() {
           onChange={toggleTheme}
           className="ml-4"
         >
-          {theme === 'light' ? <LightModeIcon /> : <DarkModeIcon />}
+          {themeButtonIcon}
         </ToggleButton>
       </div>
       {showPopup && (
@@ -148,3 +142,5 @@ export default function NavBar() {
     </nav>
   );
 }
+
+export default React.memo(NavBar);

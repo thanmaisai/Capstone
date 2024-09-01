@@ -1,11 +1,12 @@
-/* This code snippet is a React component named `AdminDashboard`. Here's a breakdown of what it does: */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_BOOKS } from '../../gqloperations/mutations';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { useTheme } from '@mui/material/styles';
-import { Box, Typography, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress } from '@mui/material';
+import {
+  Box, Typography, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, CircularProgress
+} from '@mui/material';
 
 const AdminDashboard = () => {
   const theme = useTheme();
@@ -17,34 +18,21 @@ const AdminDashboard = () => {
     setRole(storedRole);
   }, []);
 
-  if (loading) return (
-    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-      <CircularProgress />
-    </Box>
-  );
-  if (error) return <Typography color="error">Error: {error.message}</Typography>;
+  const books = useMemo(() => data?.books || [], [data]);
 
-  const books = data.books;
+  const totalBooks = useMemo(() => books.length, [books]);
+  const totalAvailable = useMemo(() => books.reduce((sum, book) => sum + book.available, 0), [books]);
+  const totalBorrowed = useMemo(() => books.reduce((sum, book) => sum + book.borrowed, 0), [books]);
 
-  // Calculating overall stats
-  const totalBooks = books.length;
-  const totalAvailable = books.reduce((sum, book) => sum + book.available, 0);
-  const totalBorrowed = books.reduce((sum, book) => sum + book.borrowed, 0);
+  const categories = useMemo(() => [...new Set(books.map(book => book.category))], [books]);
+  const booksPerCategory = useMemo(() => categories.map(category => (
+    books.filter(book => book.category === category).reduce((total, book) => total + book.available, 0)
+  )), [books, categories]);
+  const borrowedPerCategory = useMemo(() => categories.map(category => (
+    books.filter(book => book.category === category).reduce((total, book) => total + book.borrowed, 0)
+  )), [books, categories]);
 
-  // Data for charts
-  const categories = [...new Set(books.map(book => book.category))];
-  const booksPerCategory = categories.map(category => {
-    return books
-      .filter(book => book.category === category)
-      .reduce((total, book) => total + book.available, 0);
-  });
-  const borrowedPerCategory = categories.map(category => {
-    return books
-      .filter(book => book.category === category)
-      .reduce((total, book) => total + book.borrowed, 0);
-  });
-
-  const availabilityChartData = {
+  const availabilityChartData = useMemo(() => ({
     labels: categories,
     datasets: [
       {
@@ -55,9 +43,9 @@ const AdminDashboard = () => {
         borderWidth: 1,
       },
     ],
-  };
+  }), [categories, booksPerCategory, theme]);
 
-  const borrowedChartData = {
+  const borrowedChartData = useMemo(() => ({
     labels: categories,
     datasets: [
       {
@@ -68,7 +56,15 @@ const AdminDashboard = () => {
         borderWidth: 1,
       },
     ],
-  };
+  }), [categories, borrowedPerCategory, theme]);
+
+  if (loading) return (
+    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <CircularProgress />
+    </Box>
+  );
+
+  if (error) return <Typography color="error">Error: {error.message}</Typography>;
 
   return (
     <Box
@@ -153,4 +149,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default React.memo(AdminDashboard);
