@@ -16,8 +16,10 @@
     "@mui/icons-material": "^6.0.1",
     "@mui/material": "^6.0.1",
     "@mui/system": "^6.0.1",
+    "@mui/x-date-pickers": "^7.15.0",
     "apollo-client": "^2.6.10",
     "chart.js": "^4.4.4",
+    "dayjs": "^1.11.13",
     "framer-motion": "^11.3.31",
     "graphql": "^15.9.0",
     "react": "^18.3.1",
@@ -26,7 +28,8 @@
     "react-hook-form": "^7.53.0",
     "react-router-dom": "^6.26.1",
     "react-slick": "^0.30.2",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "victory": "^37.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
