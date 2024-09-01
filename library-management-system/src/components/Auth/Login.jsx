@@ -1,3 +1,4 @@
+/* The above code is a React component for a login form. Here is a summary of what the code is doing: */
 import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';

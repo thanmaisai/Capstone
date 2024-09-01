@@ -1,3 +1,5 @@
+/* This code snippet is creating a user authentication and data management system using React's context
+API. Here's a breakdown of what each part of the code is doing: */
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
 const UserContext = createContext(null);
@@ -15,7 +17,7 @@ export const UserProvider = ({ children }) => {
   const login = (userData) => {
     const updatedUser = {
       ...userData,
-      borrowedBooks: userData.borrowedBooks || [], // Ensure borrowedBooks is an array
+      borrowedBooks: userData.borrowedBooks || [],
     };
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));

@@ -1,3 +1,5 @@
+/* This code snippet is defining GraphQL mutations and queries using the `gql` function from the
+`@apollo/client` library. Here's a breakdown of what each part is doing: */
 import { gql } from '@apollo/client';
 
 // Mutation for signing up a new user

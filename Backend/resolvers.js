@@ -1,3 +1,5 @@
+/* This code snippet is a set of resolvers for a GraphQL schema. Resolvers are functions that define
+how to retrieve or mutate data for each field in a GraphQL query or mutation. */
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 import User from './models/user.js';

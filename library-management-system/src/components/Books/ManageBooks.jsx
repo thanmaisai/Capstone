@@ -1,3 +1,5 @@
+/* This code snippet is a React component called `ManageBooks` that manages a list of books. Here's a
+breakdown of what it does: */
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { Box, Button, CircularProgress, Alert, useTheme, Typography } from '@mui/material';

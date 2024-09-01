@@ -1,3 +1,5 @@
+/* The above code is a React component called `UpdateBookModal` that serves as a modal for updating
+book information. Here is a breakdown of what the code is doing: */
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { UPDATE_BOOK } from '../../gqloperations/mutations';

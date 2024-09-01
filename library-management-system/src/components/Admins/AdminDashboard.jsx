@@ -1,3 +1,4 @@
+/* This code snippet is a React component named `AdminDashboard`. Here's a breakdown of what it does: */
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_BOOKS } from '../../gqloperations/mutations';

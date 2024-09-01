@@ -1,3 +1,5 @@
+/* This code snippet is a React functional component called `NavBar` that represents a navigation bar
+for a web application. Here's a breakdown of what the code is doing: */
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from '../components/UserContext';

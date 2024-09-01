@@ -1,3 +1,5 @@
+/* This code snippet is a React component called `AddBookModal` that represents a modal for adding a
+new book. Here's a breakdown of what the code is doing: */
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { ADD_BOOK_MUTATION } from '../../gqloperations/mutations';

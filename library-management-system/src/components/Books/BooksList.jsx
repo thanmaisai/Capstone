@@ -1,3 +1,4 @@
+/* This code snippet defines a React functional component called `BooksList`. */
 import React from 'react';
 import { useMutation } from '@apollo/client';
 import { BORROW_BOOK, GET_BOOKS } from '../../gqloperations/mutations';

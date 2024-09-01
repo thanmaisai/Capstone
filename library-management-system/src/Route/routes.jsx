@@ -1,3 +1,4 @@
+/* This code snippet is defining routes for a React application using React Router. */
 import Signup from "../components/Auth/Signup";
 import Login from "../components/Auth/Login";
 import Home from "../components/Home";

@@ -1,3 +1,5 @@
+/* This JavaScript code snippet is setting up an Apollo Server for a GraphQL API. Here's a breakdown of
+what each part of the code is doing: */
 import { ApolloServer } from 'apollo-server';
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
 import typeDefs from './schemaGql.js';

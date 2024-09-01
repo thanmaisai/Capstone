@@ -1,3 +1,5 @@
+/* This code represents a React functional component named `Home` that serves as the main content for a
+Library Management System application. Here's a breakdown of what the code is doing: */
 // src/components/Home.js
 import React, { useEffect } from 'react';
 import { Typography, Container, Grid, Paper, Card, CardContent, useTheme } from '@mui/material';

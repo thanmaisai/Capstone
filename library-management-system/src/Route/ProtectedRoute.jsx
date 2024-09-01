@@ -1,4 +1,7 @@
-// ProtectedRoute.js
+/**
+ * The `ProtectedRoute` component in JavaScript React checks user authentication and role permissions
+ * before rendering the specified component or redirecting to appropriate pages.
+ */
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useUser } from '../components/UserContext';

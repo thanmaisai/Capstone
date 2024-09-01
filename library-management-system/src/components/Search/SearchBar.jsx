@@ -1,3 +1,5 @@
+/* This code snippet is a React functional component called `SearchBar`. It is a reusable component
+that represents a search bar UI element. Here is a breakdown of what the code is doing: */
 import React, { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { IconButton, InputBase, Paper, Select, MenuItem, FormControl, InputLabel } from '@mui/material';

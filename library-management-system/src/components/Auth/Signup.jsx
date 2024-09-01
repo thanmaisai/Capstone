@@ -1,3 +1,4 @@
+/* The above code is a React component for a signup form. Here is a summary of what the code is doing: */
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { SIGNUP_USER } from '../../gqloperations/mutations';

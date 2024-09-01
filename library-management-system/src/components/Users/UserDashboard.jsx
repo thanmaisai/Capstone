@@ -1,3 +1,5 @@
+/* The above code is a React functional component called `UserDashboard`. Here is a summary of what the
+code is doing: */
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../UserContext';
 import { useQuery } from '@apollo/client';

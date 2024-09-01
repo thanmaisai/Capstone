@@ -1,3 +1,5 @@
+/* This code snippet is defining the GraphQL schema using Apollo Server's `gql` tag for creating type
+definitions. Here's a breakdown of what it's doing: */
 import { gql } from "apollo-server"
 
 const typeDefs = gql`
