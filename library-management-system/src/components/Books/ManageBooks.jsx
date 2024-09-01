@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
+import { Box, Button, CircularProgress, Alert, useTheme, Typography } from '@mui/material';
 import AddBookModal from '../Admins/AddBookForm';
 import UpdateBookModal from '../Users/UpdateBookForm';
 import BooksList from '../Books/BooksList';
@@ -7,6 +8,7 @@ import SearchBar from '../Search/SearchBar';
 import { GET_BOOKS, DELETE_BOOK, BORROW_BOOK } from '../../gqloperations/mutations';
 
 const ManageBooks = () => {
+  const theme = useTheme();
   const { data, loading, error, refetch } = useQuery(GET_BOOKS);
   const [deleteBook] = useMutation(DELETE_BOOK, {
     onCompleted: () => refetch(),
@@ -48,34 +50,107 @@ const ManageBooks = () => {
   );
 
   const handleBookAdded = () => {
-    refetch(); // Refetch books after adding a new book
+    refetch();
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error loading books: {error.message}</p>;
+  if (loading) return <CircularProgress />;
+  if (error) return <Alert severity="error">{error.message}</Alert>;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Manage Books</h1>
-      <button
-        onClick={() => setModalOpen(true)}
-        className="mb-4 py-2 px-4 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600"
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        pt: 3,
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
+        minHeight: '100vh', // Ensure full height
+        p: 2,
+      }}
+    >
+      <Typography variant="h4" gutterBottom>
+        Manage Books
+      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: 1200,
+          mb: 2,
+        }}
       >
-        Add New Book
-      </button>
+        <SearchBar
+          searchText={searchText}
+          setSearchText={setSearchText}
+          onSearch={() => {}}
+          sx={{ width: '100%', maxWidth: 600, mb: 2 }}
+        />
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 1,
+            width: '100%',
+            maxWidth: 600,
+          }}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setModalOpen(true)}
+            sx={{
+              flex: 1,
+              borderRadius: 4,
+              padding: '8px 16px',
+              fontWeight: 'bold',
+              textTransform: 'none',
+              boxShadow: 2,
+              '&:hover': {
+                boxShadow: 4,
+              },
+            }}
+          >
+            Add New Book
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setSearchText('')}
+            sx={{
+              flex: 1,
+              borderRadius: 4,
+              padding: '8px 16px',
+              textTransform: 'none',
+              boxShadow: 2,
+              '&:hover': {
+                boxShadow: 4,
+              },
+            }}
+          >
+            Clear Search
+          </Button>
+        </Box>
+      </Box>
       <AddBookModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onBookAdded={handleBookAdded} />
       <UpdateBookModal
         isOpen={isUpdateModalOpen}
         onClose={() => setUpdateModalOpen(false)}
         book={selectedBook}
-        refetch={refetch} // Pass refetch function
+        refetch={refetch}
       />
-      <SearchBar
-        searchText={searchText}
-        setSearchText={setSearchText}
-        onSearch={() => {}}
-      />
-      <div className="mt-8">
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: 1,
+          p: 2,
+          boxShadow: 2,
+          width: '100%',
+          maxWidth: 1500,
+          mt: 2,
+        }}
+      >
         <BooksList
           books={filteredBooks}
           onDelete={handleDelete}
@@ -83,8 +158,8 @@ const ManageBooks = () => {
           role="admin"
           onBorrow={handleBorrow}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

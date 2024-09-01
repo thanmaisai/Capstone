@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { ADD_BOOK_MUTATION } from '../../gqloperations/mutations';
+import { useTheme } from '@mui/material/styles';
 
 const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
+  const theme = useTheme();
   const [addBook, { error }] = useMutation(ADD_BOOK_MUTATION);
   const [formData, setFormData] = useState({
     title: '',
@@ -17,7 +19,7 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
-      [name]: name === 'available' || name === 'borrowed' ? Number(value) : value,
+      [name]: ['available', 'borrowed'].includes(name) ? Number(value) : value,
     }));
   };
 
@@ -35,8 +37,8 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
             available: '',
             borrowed: ''
           });
-          onClose(); // Close the modal
-          onBookAdded(); // Notify parent to refetch books
+          onClose();
+          onBookAdded(); 
         }
       });
     } catch (err) {
@@ -47,118 +49,89 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-3xl">
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-3xl">
-            <h2 className="text-xl font-bold mb-4 text-gray-800">Add New Book</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="mb-3">
-                  <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="title">
-                    Title
-                  </label>
-                  <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="author">
-                    Author
-                  </label>
-                  <input
-                    type="text"
-                    id="author"
-                    name="author"
-                    value={formData.author}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="category">
-                    Category
-                  </label>
-                  <input
-                    type="text"
-                    id="category"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="image">
-                    Image URL
-                  </label>
-                  <input
-                    type="text"
-                    id="image"
-                    name="image"
-                    value={formData.image}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="available">
-                    Available
-                  </label>
-                  <input
-                    type="number"
-                    id="available"
-                    name="available"
-                    value={formData.available}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="borrowed">
-                    Borrowed
-                  </label>
-                  <input
-                    type="number"
-                    id="borrowed"
-                    name="borrowed"
-                    value={formData.borrowed}
-                    onChange={handleChange}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end mt-4">
-                <button
-                  type="button"
-                  className="mr-3 py-2 px-4 bg-gray-500 text-white font-bold rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  onClick={onClose}
+    <div className="fixed inset-0 flex items-center justify-center"
+      style={{
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backdropFilter: 'blur(5px)',
+        zIndex: 1200,
+      }}
+    >
+      <div className="p-4 rounded-lg shadow-lg w-full max-w-3xl"
+        style={{
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.primary,
+          zIndex: 1300,
+        }}
+      >
+        <h2 className="text-xl font-bold mb-4"
+          style={{ color: theme.palette.text.primary }}
+        >
+          Add New Book
+        </h2>
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { id: 'title', label: 'Title' },
+              { id: 'author', label: 'Author' },
+              { id: 'category', label: 'Category' },
+              { id: 'image', label: 'Image URL' },
+              { id: 'available', label: 'Available', type: 'number' },
+              { id: 'borrowed', label: 'Borrowed', type: 'number' }
+            ].map(({ id, label, type = 'text' }) => (
+              <div key={id} className="mb-3">
+                <label
+                  className="block text-sm font-bold mb-1"
+                  htmlFor={id}
+                  style={{ color: theme.palette.text.secondary }}
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="py-2 px-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  Add Book
-                </button>
+                  {label}
+                </label>
+                <input
+                  type={type}
+                  id={id}
+                  name={id}
+                  value={formData[id]}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                  style={{
+                    borderColor: theme.palette.divider,
+                    backgroundColor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
+                  }}
+                  required
+                />
               </div>
-              {error && <p className="text-red-500 mt-4">{error.message}</p>}
-            </form>
+            ))}
           </div>
-        </div>
-        {error && <p className="text-red-500 mt-4">{error.message}</p>}
+          <div className="flex justify-end mt-4">
+            <button
+              type="button"
+              className="mr-3 py-2 px-4 rounded-lg"
+              style={{
+                backgroundColor: theme.palette.action.disabledBackground,
+                color: theme.palette.text.primary,
+                border: 'none',
+                cursor: 'pointer',
+              }}
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="py-2 px-4 rounded-lg"
+              style={{
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              Add Book
+            </button>
+          </div>
+          {error && <p className="text-red-500 mt-4">{error.message}</p>}
+        </form>
       </div>
     </div>
   );
