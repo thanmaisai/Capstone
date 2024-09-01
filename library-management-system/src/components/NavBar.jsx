@@ -37,7 +37,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className={`shadow-md ${theme === 'light' ? 'bg-purple-700 text-white' : 'bg-gray-900 text-gray-200'}`}>
+    <nav className={`shadow-md ${theme === 'light' ? 'bg-white-900 text-black' : 'bg-gray-900 text-gray-200'}`}>
       <div className="container mx-auto flex items-center justify-between p-4">
         <div className="flex items-center">
           <Link to="/">
