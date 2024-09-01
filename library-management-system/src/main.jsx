@@ -8,10 +8,11 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { UserProvider } from '../src/components/UserContext';
 import { ThemeProvider } from '@mui/material/styles';
 import { lightTheme, darkTheme } from './theme';
+import { baseUrl } from '../url';
 
 // Setting up Apollo Client
 const client = new ApolloClient({
-  uri: 'http://localhost:4000',
+  uri: `${baseUrl}`,
   cache: new InMemoryCache()
 });
 
