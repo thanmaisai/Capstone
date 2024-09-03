@@ -33,8 +33,21 @@ The **Library Management System (LMS)** is a comprehensive web application desig
 - **Testing**: Jest, ViteTest Framework
 
 ## Project Structure
-├── backend │ ├── models │ ├── resolvers │ ├── schemas │ └── server.js ├── frontend │ ├── src │ │ ├── components │ │ ├── pages │ │ ├── redux │ │ ├── styles │ │ └── App.js ├── .env ├── package.json └── README.md
-
+├── backend 
+│ ├── models 
+│ ├── resolvers 
+│ ├── schemas 
+| ├── .env 
+│ └── server.js 
+├── frontend 
+│ ├── src 
+│ │ ├── components 
+│ │ ├── pages 
+│ │ ├── redux 
+│ │ ├── styles 
+│ │ └── App.js 
+├── package.json 
+└── README.md
 
 ## Installation
 
@@ -46,8 +59,8 @@ The **Library Management System (LMS)** is a comprehensive web application desig
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/yourusername/lms.git
-    cd lms
+    git clone https://github.com/thanmaisai/HyperBooks/
+    cd HyperBooks
     ```
 
 2. **Backend Setup**:
@@ -58,7 +71,7 @@ The **Library Management System (LMS)** is a comprehensive web application desig
 
 3. **Frontend Setup**:
     ```bash
-    cd frontend
+    cd library-management-system
     npm install
     ```
 
