@@ -33,6 +33,7 @@ The **Library Management System (LMS)** is a comprehensive web application desig
 - **Testing**: Jest, ViteTest Framework
 
 ## Project Structure
+```
 ├── backend 
 │ ├── models 
 │ ├── resolvers 
@@ -48,6 +49,7 @@ The **Library Management System (LMS)** is a comprehensive web application desig
 │ │ └── App.js 
 ├── package.json 
 └── README.md
+```
 
 ## Installation
 
